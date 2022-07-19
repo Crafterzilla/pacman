@@ -1,6 +1,9 @@
 #include "raylib.h"
-#include "./include/test.h"
+#include "./include/player.h"
 #include "./include/gameboard.h"
+
+#define log(x) std::cout << x << std::endl;
+
 
 int main(int argc, char ** argv)
 {
@@ -10,14 +13,18 @@ int main(int argc, char ** argv)
 
     InitWindow(widthRes, lengthRes, "Pac-Mans");
 
+    //Set FPS
+    const int screenRefreshRate = GetMonitorRefreshRate(0);
+    SetTargetFPS(screenRefreshRate);
+
     Texture2D boardMaze = LoadTexture("./img/board.png");
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
             ClearBackground(BLACK);
-            //DrawText("Sample text", 190, 200, 20, RAYWHITE);
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
+            DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();
     }
 
@@ -25,5 +32,4 @@ int main(int argc, char ** argv)
 
     return 0;
 }
-
 
