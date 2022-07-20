@@ -6,11 +6,11 @@
 class Player {
 private:
     Texture2D pacmanSprites;
-    float x, y;
-    Rectangle pacman;
-    enum Direction {right , left, down, up, nodir};
-    int currentDirection;
+    float x, y, timer;
+    enum Direction {right, left, down, up, nodir};
+    int currentDirection, frame;
 public:
+    Rectangle hitbox;
     Player(Texture2D);
     void MovePlayer();
     void DrawPlayer();

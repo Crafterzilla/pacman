@@ -4,7 +4,7 @@ Player::Player(Texture2D sprite) {
     this->pacmanSprites = sprite;
     this->x = 325;
     this->y = 625;
-    this->pacman = {x, y, 25, 25};
+    this->hitbox = {x, y, 25, 25};
     this->currentDirection = nodir;
     this->timer = 0.0f;
     this->frame = 0;
@@ -43,8 +43,8 @@ void Player::DrawPlayer() {
 
     pacFrame = {static_cast<float>(frame) * scaleFactor, rotation, frameWidth, 
     frameHeight};
-
-    pacman = {x, y, 25, 25};
+ 
+    hitbox = {x, y, 25, 25};
     DrawTextureRec(pacmanSprites, pacFrame, position, RAYWHITE);
 }
 
