@@ -21,13 +21,18 @@ int main(int argc, char ** argv)
     Texture2D pacmanSprite = LoadTexture("./img/pacmanSprites.png");
 
     Player pacman(pacmanSprite);
+    Walls walls(boardMaze);
+    GameCondtions game;
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
             ClearBackground(BLACK);
-            //DisplayMouseCords();
+            DisplayMouseCords();
+            game.playerAndWallCollsion = walls.WallCollsion(pacman.hitbox);
+            log(game.playerAndWallCollsion);
             pacman.MovePlayer();
+
             pacman.DrawPlayer();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
