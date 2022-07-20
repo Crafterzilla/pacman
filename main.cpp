@@ -18,7 +18,7 @@ int main(int argc, char ** argv)
     SetTargetFPS(screenRefreshRate);
 
     Texture2D boardMaze = LoadTexture("./img/board.png");
-    Texture2D pacmanSprite = LoadTexture("./img/pacman.png");
+    Texture2D pacmanSprite = LoadTexture("./img/pacmanSprites.png");
 
     Player pacman(pacmanSprite);
 
@@ -26,7 +26,8 @@ int main(int argc, char ** argv)
     {
         BeginDrawing();
             ClearBackground(BLACK);
-            DisplayMouseCords();
+            //DisplayMouseCords();
+            pacman.MovePlayer();
             pacman.DrawPlayer();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
