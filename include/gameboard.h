@@ -6,7 +6,7 @@
 
 class Walls {
 private:
-    Rectangle wall[39];
+    Rectangle wall[40];
     int numOfWAlls = sizeof(wall) / sizeof(*wall);
 public:
     Walls(Texture2D);

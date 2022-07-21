@@ -62,6 +62,7 @@ Walls::Walls(Texture2D maze) {
     this->wall[36] = {175, 650, scaleFactor * 2, scaleFactor * 5}; //t shape bottom
     this->wall[37] = {400, 725, scaleFactor * 10, scaleFactor * 2}; //t shape bottom
     this->wall[38] = {475, 650, scaleFactor * 2, scaleFactor * 5}; //t shape bottom
+    this->wall[39] = {325, 75, scaleFactor * 2, scaleFactor * 4}; //middle wall piece on the top
 }
 
 bool Walls::WallCollsion(Rectangle pacman) {
