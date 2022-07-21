@@ -110,6 +110,14 @@ void Player::MovePlayer(bool collision) {
         currentDirection = down;
     }
 
+    if (collision) {
+        RoundtoNearestFive(this->y);
+        RoundtoNearestFive(this->x);
+        //this->x -= 25;
+        moveX = 0;
+        moveY = 0;
+    }
+
     log(x);
     log(y);
     this->x += moveX * speed * GetFrameTime();
@@ -120,19 +128,23 @@ void Player::MovePlayer(bool collision) {
 //float 2.4, 2.6
 void Player::RoundtoNearestFive(float& num) {
     num = round(num);
+    int lastTwoDigits = (int)num % 100;
 
-    std::string digitArray = std::to_string((int)num);
-    char lastDigit = digitArray[digitArray.size() - 1];
-    
-    int lastNum = lastDigit - '0';
-
-    if (lastNum > 3) {
-        lastNum = 5;
-    }
-    else {
-        lastNum = 0;
+    if ((lastTwoDigits > 0 && lastTwoDigits < 12.5) ||
+    (lastTwoDigits > 25 && lastTwoDigits < 37.5) ||
+    (lastTwoDigits > 50 && lastTwoDigits < 62.5) ||
+    (lastTwoDigits > 75 && lastTwoDigits < 87.5)) {
+        while ((int)num % 25 != 0) {
+            num--;
+        }
     }
 
-    digitArray[digitArray.size() - 1] = lastNum + '0';
-    num = std::stoi(digitArray);
+    if ((lastTwoDigits > 12.5 && lastTwoDigits < 25) ||
+    (lastTwoDigits > 37.5 && lastTwoDigits < 50) ||
+    (lastTwoDigits > 62.5 && lastTwoDigits < 75) ||
+    (lastTwoDigits > 87.5 && lastTwoDigits < 100)) {
+        while ((int)num % 25 != 0) {
+            num++;
+        }
+    }
 }
