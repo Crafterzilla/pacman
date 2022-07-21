@@ -31,7 +31,7 @@ int main(int argc, char ** argv)
             DisplayMouseCords();
             game.playerAndWallCollsion = walls.WallCollsion(pacman.hitbox);
             log(game.playerAndWallCollsion);
-            pacman.MovePlayer();
+            pacman.MovePlayer(game.playerAndWallCollsion);
 
             pacman.DrawPlayer();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
