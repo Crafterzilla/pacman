@@ -23,89 +23,54 @@ GameCondtions::GameCondtions() {
 
 Walls::Walls(Texture2D maze) {
     const int scaleFactor = 25;
-    this->topWall = {0, 50, static_cast<float>(maze.width), 25};
-    this->bottomWall = {0, 800, static_cast<float>(maze.width), 25};
-    this->leftWall = {0, 50, 25, static_cast<float>(maze.height)};
-    this->rightWall = {675, 50, 25, static_cast<float>(maze.height)};
-    this->bigLeftBoxTop = {0, 275, scaleFactor * 6, scaleFactor * 5};
-    this->bigLeftBoxBottom = {0, 425, scaleFactor * 6, scaleFactor * 5};
-    this->bigRightBoxTop = {550, 275, scaleFactor * 6, scaleFactor * 5};
-    this->bigRightBoxBottom  = {550, 425, scaleFactor * 6, scaleFactor * 5};
-    this->middleBox = {250, 350, scaleFactor * 8, scaleFactor * 5};
-    this->smallLeftBox = {0, 650, scaleFactor * 3, scaleFactor * 2};
-    this->smallRightBox = {625, 650, scaleFactor * 3, scaleFactor * 2};
-    this->left1 = {50, 100, scaleFactor * 4, scaleFactor * 3};
-    this->left2 = {175, 100, scaleFactor * 5, scaleFactor * 3};
-    this->left3 = {50, 200, scaleFactor * 4, scaleFactor * 2};
-    this->right1 = {550, 100, scaleFactor  * 4, scaleFactor * 3};
-    this->right2 = {400, 100, scaleFactor * 5, scaleFactor * 3};
-    this->right3 = {550, 200, scaleFactor * 4, scaleFactor * 2};
-    this->t1top = {175, 200, scaleFactor * 2, scaleFactor * 8};
-    this->t1bottom = {225, 275, scaleFactor * 3, scaleFactor * 2};
-    this->t2top = {250, 200, scaleFactor * 8, scaleFactor * 2};
-    this->t2bottom = {325, 250, scaleFactor * 2, scaleFactor * 3};
-    this->t3top = {475, 200, scaleFactor * 2, scaleFactor * 8};
-    this->t3bottom = {400, 275, scaleFactor * 3, scaleFactor * 2};
-    this->left4 = {175, 425, scaleFactor * 2, scaleFactor * 5};
-    this->left5 = {175, 575, scaleFactor * 5, scaleFactor * 2};
-    this->right4 = {475, 425, scaleFactor * 2, scaleFactor * 5};
-    this->right5 = {400, 575, scaleFactor * 5, scaleFactor * 2};
-    this->l1top = {50, 575, scaleFactor * 4, scaleFactor * 2};
-    this->l1bottom = {100, 625, scaleFactor * 2, scaleFactor * 3};
-    this->l2top = {550, 575, scaleFactor * 4, scaleFactor * 2};
-    this->l2bottom = {550, 625, scaleFactor * 2, scaleFactor * 3};
-    this->t4top = {250, 500, scaleFactor * 8, scaleFactor * 2};
-    this->t4bottom = {325, 550, scaleFactor * 2, scaleFactor * 3};
-    this->t5top = {250, 650, scaleFactor * 8, scaleFactor * 2};
-    this->t5bottom = {325, 700, scaleFactor * 2, scaleFactor * 3};
-    this->t6top = {50, 725, scaleFactor * 10, scaleFactor * 2};
-    this->t6bottom = {175, 650, scaleFactor * 2, scaleFactor * 5};
-    this->t7top = {400, 725, scaleFactor * 10, scaleFactor * 2};
-    this->t7bottom = {475, 650, scaleFactor * 2, scaleFactor * 5};
+    this->wall[0] = {0, 50, static_cast<float>(maze.width), 25}; //topwall
+    this->wall[1] = {0, 800, static_cast<float>(maze.width), 25}; //bottomwall
+    this->wall[2] = {0, 50, 25, static_cast<float>(maze.height)}; //leftwall
+    this->wall[3] = {675, 50, 25, static_cast<float>(maze.height)}; //rightwall
+    this->wall[4] = {0, 275, scaleFactor * 6, scaleFactor * 5}; //big left box top
+    this->wall[5] = {0, 425, scaleFactor * 6, scaleFactor * 5}; //big left box bottom
+    this->wall[6] = {550, 275, scaleFactor * 6, scaleFactor * 5}; // big right box top
+    this->wall[7]  = {550, 425, scaleFactor * 6, scaleFactor * 5}; //big right box bottom
+    this->wall[8] = {250, 350, scaleFactor * 8, scaleFactor * 5}; //middle box
+    this->wall[9] = {0, 650, scaleFactor * 3, scaleFactor * 2}; //small left box
+    this->wall[10] = {625, 650, scaleFactor * 3, scaleFactor * 2}; //small right box
+    this->wall[11] = {50, 100, scaleFactor * 4, scaleFactor * 3}; //left top rectangle
+    this->wall[12] = {175, 100, scaleFactor * 5, scaleFactor * 3}; //left top rectangle
+    this->wall[13] = {50, 200, scaleFactor * 4, scaleFactor * 2}; //left top rectangle
+    this->wall[14] = {550, 100, scaleFactor  * 4, scaleFactor * 3}; //right top rectangle
+    this->wall[15] = {400, 100, scaleFactor * 5, scaleFactor * 3}; //right top rectangle
+    this->wall[16] = {550, 200, scaleFactor * 4, scaleFactor * 2}; //right top rectangle
+    this->wall[17] = {175, 200, scaleFactor * 2, scaleFactor * 8}; //t shape top half
+    this->wall[18] = {225, 275, scaleFactor * 3, scaleFactor * 2}; //t shape top half
+    this->wall[19] = {250, 200, scaleFactor * 8, scaleFactor * 2}; //t shape top half
+    this->wall[20] = {325, 250, scaleFactor * 2, scaleFactor * 3}; //t shape top half
+    this->wall[21] = {475, 200, scaleFactor * 2, scaleFactor * 8}; //t shape top half
+    this->wall[22] = {400, 275, scaleFactor * 3, scaleFactor * 2}; //t shape top half
+    this->wall[23] = {175, 425, scaleFactor * 2, scaleFactor * 5}; //left rectangle bottom
+    this->wall[24] = {175, 575, scaleFactor * 5, scaleFactor * 2}; //left rectangle bottom
+    this->wall[25] = {475, 425, scaleFactor * 2, scaleFactor * 5}; //right rectangle bottom
+    this->wall[26] = {400, 575, scaleFactor * 5, scaleFactor * 2}; //right rectangle bottom
+    this->wall[27] = {50, 575, scaleFactor * 4, scaleFactor * 2}; //l shape bottom
+    this->wall[28] = {100, 625, scaleFactor * 2, scaleFactor * 3}; //l shape bottom
+    this->wall[29] = {550, 575, scaleFactor * 4, scaleFactor * 2}; //l shape bottom
+    this->wall[30] = {550, 625, scaleFactor * 2, scaleFactor * 3}; //l shape bottom
+    this->wall[31] = {250, 500, scaleFactor * 8, scaleFactor * 2}; //t shape bottom
+    this->wall[32] = {325, 550, scaleFactor * 2, scaleFactor * 3}; //t shape bottom
+    this->wall[33] = {250, 650, scaleFactor * 8, scaleFactor * 2}; //t shape bottom
+    this->wall[34] = {325, 700, scaleFactor * 2, scaleFactor * 3}; //t shape bottom
+    this->wall[35] = {50, 725, scaleFactor * 10, scaleFactor * 2}; //t shape bottom
+    this->wall[36] = {175, 650, scaleFactor * 2, scaleFactor * 5}; //t shape bottom
+    this->wall[37] = {400, 725, scaleFactor * 10, scaleFactor * 2}; //t shape bottom
+    this->wall[38] = {475, 650, scaleFactor * 2, scaleFactor * 5}; //t shape bottom
 }
 
 bool Walls::WallCollsion(Rectangle pacman) {
-    if (CheckCollisionRecs(pacman, topWall)
-    || CheckCollisionRecs(pacman, bottomWall) ||
-    CheckCollisionRecs(pacman, leftWall) ||
-    CheckCollisionRecs(pacman, rightWall) ||
-    CheckCollisionRecs(pacman, bigLeftBoxTop) ||
-    CheckCollisionRecs(pacman, bigLeftBoxBottom) ||
-    CheckCollisionRecs(pacman, bigRightBoxTop) ||
-    CheckCollisionRecs(pacman, bigRightBoxBottom) ||
-    CheckCollisionRecs(pacman, smallLeftBox) ||
-    CheckCollisionRecs(pacman, smallRightBox) ||
-    CheckCollisionRecs(pacman, middleBox) ||
-    CheckCollisionRecs(pacman, left1) ||
-    CheckCollisionRecs(pacman, left2) ||
-    CheckCollisionRecs(pacman, left3) ||
-    CheckCollisionRecs(pacman, right1) ||
-    CheckCollisionRecs(pacman, right2) ||
-    CheckCollisionRecs(pacman, right3) ||
-    CheckCollisionRecs(pacman, t1top) ||
-    CheckCollisionRecs(pacman, t2top) ||
-    CheckCollisionRecs(pacman, t3top) ||
-    CheckCollisionRecs(pacman, t1bottom) ||
-    CheckCollisionRecs(pacman, t2bottom) ||
-    CheckCollisionRecs(pacman, t3bottom) ||
-    CheckCollisionRecs(pacman, left4) ||
-    CheckCollisionRecs(pacman, left5) ||
-    CheckCollisionRecs(pacman, right4) ||
-    CheckCollisionRecs(pacman, right5) ||
-    CheckCollisionRecs(pacman, l1top) ||
-    CheckCollisionRecs(pacman, l1bottom) ||
-    CheckCollisionRecs(pacman, l2top) ||
-    CheckCollisionRecs(pacman, l2bottom) ||
-    CheckCollisionRecs(pacman, t4top) ||
-    CheckCollisionRecs(pacman, t4bottom) ||
-    CheckCollisionRecs(pacman, t5top) ||
-    CheckCollisionRecs(pacman, t5bottom) ||
-    CheckCollisionRecs(pacman, t6top) ||
-    CheckCollisionRecs(pacman, t6bottom) ||
-    CheckCollisionRecs(pacman, t7top) ||
-    CheckCollisionRecs(pacman, t7bottom)
-    )
-        return true;
+
+    for (unsigned int i = 0; i < numOfWAlls; i++) {
+        if (CheckCollisionRecs(pacman, wall[i])) {
+            return true;
+        }
+    }
         
     return false;
 }
