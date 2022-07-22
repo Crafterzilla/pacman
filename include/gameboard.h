@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include <iostream>
+#include <vector>
 
 class Walls {
 private:
@@ -18,6 +19,16 @@ public:
     bool IsPlayerAlive, playerAndWallCollsion;
     GameCondtions();
 };
+
+class Balls {
+private:
+    std::vector<Rectangle> ball;
+
+public:
+    Balls(Walls&);
+    void DrawBalls();
+};
+
 
 void DrawGrid(int widthRes, int lengthRes, int scaleFactor);
 void DisplayMouseCords();

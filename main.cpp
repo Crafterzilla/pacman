@@ -23,6 +23,7 @@ int main(int argc, char ** argv)
     Player pacman(pacmanSprite);
     Walls walls(boardMaze);
     GameCondtions game;
+    Balls balls(walls);
 
     while (!WindowShouldClose())
     {
@@ -35,6 +36,7 @@ int main(int argc, char ** argv)
 
             pacman.DrawPlayer();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
+            balls.DrawBalls();
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();
     }

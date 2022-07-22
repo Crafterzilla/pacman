@@ -75,3 +75,30 @@ bool Walls::WallCollsion(Rectangle pacman) {
         
     return false;
 }
+
+Balls::Balls(Walls& walls) {
+    ball.reserve(31 * 28);
+
+    float x = 0, y = 50;
+    for (unsigned int i = 0; i < 31 * 28; i++) {
+        Rectangle tmp = {x, y, 5, 5};
+        if (!walls.WallCollsion(tmp)) {
+            tmp = {x + 12.5f, y + 12.5f, 5, 5};
+            ball.push_back(tmp);
+        }
+        if (x > 675) {
+            y += 25;
+            x = 0;
+        } else {
+            x += 25;
+        }
+    }
+
+    ball.shrink_to_fit();
+}
+
+void Balls::DrawBalls() {
+    for (unsigned int i = 0; i < ball.size(); i++) {
+        DrawRectangleRec(ball[i], YELLOW);
+    }
+}
