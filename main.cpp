@@ -33,6 +33,7 @@ int main(int argc, char ** argv)
             game.playerAndWallCollsion = walls.WallCollsion(pacman.hitbox);
             log(game.playerAndWallCollsion);
             pacman.MovePlayer(game.playerAndWallCollsion);
+            balls.BallCollision(pacman.hitbox);
 
             pacman.DrawPlayer();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);

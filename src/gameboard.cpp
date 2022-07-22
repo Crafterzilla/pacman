@@ -102,3 +102,11 @@ void Balls::DrawBalls() {
         DrawRectangleRec(ball[i], YELLOW);
     }
 }
+
+void Balls::BallCollision(Rectangle pacman) {
+    for (unsigned int i = 0; i < ball.size(); i++) {
+        if (CheckCollisionRecs(pacman, ball[i])) {
+            ball.erase(ball.begin() + i);
+        }
+    }
+}

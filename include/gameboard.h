@@ -18,6 +18,7 @@ class GameCondtions {
 public:
     bool IsPlayerAlive, playerAndWallCollsion;
     GameCondtions();
+    void PacmanAteBall(Rectangle);
 };
 
 class Balls {
@@ -27,6 +28,7 @@ private:
 public:
     Balls(Walls&);
     void DrawBalls();
+    void BallCollision(Rectangle);
 };
 
 
