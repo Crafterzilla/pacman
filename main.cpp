@@ -1,6 +1,8 @@
 #include "raylib.h"
 #include "./include/player.h"
 #include "./include/gameboard.h"
+#include "./include/ai.h"
+
 
 #define log(x) std::cout << x << std::endl;
 
@@ -20,10 +22,15 @@ int main(int argc, char ** argv)
     Texture2D boardMaze = LoadTexture("./img/board.png");
     Texture2D pacmanSprite = LoadTexture("./img/pacmanSprites.png");
 
+    //Ghosts textures
+    Texture2D redGhostTex = LoadTexture("./img/redGhost.png");
+
     Player pacman(pacmanSprite);
     Walls walls(boardMaze);
     GameCondtions game;
     Balls balls(walls);
+    enum {red, blue, pink, orange};
+    Ghosts redGhost(redGhostTex, red);
 
     while (!WindowShouldClose())
     {
@@ -34,8 +41,10 @@ int main(int argc, char ** argv)
             log(game.playerAndWallCollsion);
             pacman.MovePlayer(game.playerAndWallCollsion);
             balls.BallCollision(pacman.hitbox);
+            //redGhost.MoveGhost();
 
             pacman.DrawPlayer();
+            redGhost.DrawGhost();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             balls.DrawBalls();
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
