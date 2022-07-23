@@ -43,8 +43,8 @@ int main(int argc, char ** argv)
             balls.BallCollision(pacman.hitbox);
             //redGhost.MoveGhost();
 
-            pacman.DrawPlayer();
-            redGhost.DrawGhost();
+            pacman.DrawEntity();
+            redGhost.DrawEntity();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             balls.DrawBalls();
             DrawGrid(widthRes, lengthRes, tileScaleFactor);

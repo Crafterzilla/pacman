@@ -12,10 +12,10 @@ Player::Player(Texture2D sprite) {
     this->frame = 0;
 };
 
-void Player::DrawPlayer() {
+void Entity::DrawEntity() {
     Vector2 position = {x, y};
     const int scaleFactor = 25;
-    static float rotation = 1.0f;
+    static float rotation = 0.0f;
 
     const float frameWidth = static_cast<float>(spriteSheet.width / 4),
     frameHeight = static_cast<float>(spriteSheet.height / 4);

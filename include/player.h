@@ -14,6 +14,7 @@ protected:
     enum Direction {right, left, down, up, nodir};
     void RoundtoNearest25(float&);
 public:
+    void DrawEntity();
     Rectangle hitbox;
 };
 
@@ -21,7 +22,7 @@ class Player : public Entity {
 public:
     Player(Texture2D);
     void MovePlayer(bool collision);
-    void DrawPlayer();
+    // void DrawPlayer();
 };
 
 #endif
