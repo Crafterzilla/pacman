@@ -7,16 +7,16 @@
 
 class Ghosts : public Entity {
 private:
-    int possibleDirections[4];
+    float possibleDirections[4];
     enum {red, blue, pink, orange};
     int whichGhost;
-    void RedAI();
-    void BlueAI();
-    void PinkAI();
-    void OrangeAI();
+    void RedAI(Rectangle& pacman);
+    void BlueAI(Rectangle& pacman);
+    void PinkAI(Rectangle& pacman);
+    void OrangeAI(Rectangle& pacman);
 public:
     Ghosts(Texture2D, int whichGhost);
-    void MoveGhost();
+    void MoveGhost(Rectangle& pacman);
     void DrawGhost();
 };
 
