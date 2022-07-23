@@ -6,18 +6,22 @@
 #include <cmath>
 #include <string>
 
-class Player {
-private:
-    Texture2D pacmanSprites;
+class Entity {
+protected:
+    Texture2D spriteSheet;
     float x, y, timer;
-    enum Direction {right, left, down, up, nodir};
     int currentDirection, nextDirection, frame;
-    void RoundtoNearestFive(float&);
+    enum Direction {right, left, down, up, nodir};
+    void RoundtoNearest25(float&);
 public:
     Rectangle hitbox;
+    void DrawEntity();
+};
+
+class Player : public Entity {
+public:
     Player(Texture2D);
     void MovePlayer(bool collision);
-    void DrawPlayer();
 };
 
 #endif

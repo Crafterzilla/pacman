@@ -3,7 +3,7 @@
 #define log(x) std::cout << x << "\n";
 
 Player::Player(Texture2D sprite) {
-    this->pacmanSprites = sprite;
+    this->spriteSheet = sprite;
     this->x = 325;
     this->y = 625;
     this->hitbox = {x, y, 25, 25};
@@ -12,13 +12,13 @@ Player::Player(Texture2D sprite) {
     this->frame = 0;
 };
 
-void Player::DrawPlayer() {
+void Entity::DrawEntity() {
     Vector2 position = {x, y};
     const int scaleFactor = 25;
     static float rotation = 1.0f;
 
-    const float frameWidth = static_cast<float>(pacmanSprites.width / 4),
-    frameHeight = static_cast<float>(pacmanSprites.height / 4);
+    const float frameWidth = static_cast<float>(spriteSheet.width / 4),
+    frameHeight = static_cast<float>(spriteSheet.height / 4);
 
     static Rectangle pacFrame = {static_cast<float>(frame), 25, frameWidth, frameHeight};
 
@@ -47,7 +47,7 @@ void Player::DrawPlayer() {
     frameHeight};
  
     hitbox = {x, y, 25, 25};
-    DrawTextureRec(pacmanSprites, pacFrame, position, RAYWHITE);
+    DrawTextureRec(spriteSheet, pacFrame, position, RAYWHITE);
 }
 
 void Player::MovePlayer(bool collision) {
@@ -85,34 +85,34 @@ void Player::MovePlayer(bool collision) {
 
     //Wait until divisbale or if opposite direction turn around
     if ((((int)this->y % 25 == 0) || (currentDirection == right)) && nextDirection == left) {
-        RoundtoNearestFive(this->y);
+        RoundtoNearest25(this->y);
         moveX = -1;
         moveY = 0;
         currentDirection = left;
     }
     if ((((int)this->y % 25 == 0) || (currentDirection == left)) && nextDirection == right) {
-        RoundtoNearestFive(this->y);
+        RoundtoNearest25(this->y);
         moveX = 1;
         moveY = 0;
         currentDirection = right;
     }
 
     if ((((int)this->x % 25 == 0) || (currentDirection == down)) && nextDirection == up) {
-        RoundtoNearestFive(this->x);
+        RoundtoNearest25(this->x);
         moveY = -1;
         moveX = 0;
         currentDirection = up;
     }
     if ((((int)this->x % 25 == 0) || (currentDirection == up)) && nextDirection == down) {
-        RoundtoNearestFive(this->x);
+        RoundtoNearest25(this->x);
         moveY = 1;
         moveX = 0;
         currentDirection = down;
     }
 
     if (collision) {
-        RoundtoNearestFive(this->y);
-        RoundtoNearestFive(this->x);
+        RoundtoNearest25(this->y);
+        RoundtoNearest25(this->x);
         //this->x -= 25;
         moveX = 0;
         moveY = 0;
@@ -126,7 +126,7 @@ void Player::MovePlayer(bool collision) {
 
 
 //float 2.4, 2.6
-void Player::RoundtoNearestFive(float& num) {
+void Entity::RoundtoNearest25(float& num) {
     num = round(num);
     int lastTwoDigits = (int)num % 100;
 
