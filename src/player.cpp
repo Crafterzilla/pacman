@@ -1,6 +1,6 @@
 #include "../include/player.h"
 
-#define log(x) std::cout << x << "\n";
+#define logStuff(x) std::cout << x << "\n";
 
 Player::Player(Texture2D sprite) {
     this->spriteSheet = sprite;
@@ -118,8 +118,8 @@ void Player::MovePlayer(bool collision) {
         moveY = 0;
     }
 
-    log(x);
-    log(y);
+    // logStuff(x);
+    // logStuff(y);
     this->x += moveX * speed * GetFrameTime();
     this->y += moveY * speed * GetFrameTime(); 
 }
@@ -128,21 +128,28 @@ void Entity::RoundtoNearest25(float& num) {
     num = round(num);
     int lastTwoDigits = (int)num % 100;
 
-    if ((lastTwoDigits > 0 && lastTwoDigits < 12.5) ||
-    (lastTwoDigits > 25 && lastTwoDigits < 37.5) ||
-    (lastTwoDigits > 50 && lastTwoDigits < 62.5) ||
-    (lastTwoDigits > 75 && lastTwoDigits < 87.5)) {
-        while ((int)num % 25 != 0) {
-            num--;
+    float lowestNum = 0, highestNum = 12.5f;
+    bool roundUp = false;
+    for (int i = 0; i < 8; i++) {
+        if (lastTwoDigits > lowestNum && lastTwoDigits < highestNum) {
+            if (!roundUp) {
+                while ((int)num % 25 != 0) {
+                    num--;
+                }
+            }
+            else {
+                while ((int)num % 25 != 0) {
+                    num++;
+                }   
+            }
+            break;
         }
-    }
-
-    if ((lastTwoDigits > 12.5 && lastTwoDigits < 25) ||
-    (lastTwoDigits > 37.5 && lastTwoDigits < 50) ||
-    (lastTwoDigits > 62.5 && lastTwoDigits < 75) ||
-    (lastTwoDigits > 87.5 && lastTwoDigits < 100)) {
-        while ((int)num % 25 != 0) {
-            num++;
+        lowestNum += 12.5;
+        highestNum += 12.5;
+        if (i % 2 == 0) {
+            roundUp = true;
+        } else {
+            roundUp = false;
         }
     }
 }
