@@ -1,7 +1,7 @@
 #include "../include/ai.h"
 
 Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
-    this->ghostSkin = ghostSkin;
+    this->spriteSheet = ghostSkin;
     this->whichGhost = whichGhost;
 
     if (whichGhost == red) {
@@ -25,13 +25,12 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
 void Ghosts::DrawGhost() {
     Vector2 position = {x, y};
     const int scaleFactor = 25;
-    static float rotation = 1.0f, timer = 0.0f;
-    static int frame = 0;
+    static float rotation = 1.0f;
 
-    const float frameWidth = static_cast<float>(ghostSkin.width / 4),
-    frameHeight = static_cast<float>(ghostSkin.height / 4);
+    const float frameWidth = static_cast<float>(spriteSheet.width / 4),
+    frameHeight = static_cast<float>(spriteSheet.height / 4);
 
-    static Rectangle ghostFrame = {static_cast<float>(frame), 25, frameWidth, frameHeight};
+    static Rectangle pacFrame = {static_cast<float>(frame), 25, frameWidth, frameHeight};
 
     if (currentDirection == up) {
         rotation = scaleFactor * up;
@@ -54,24 +53,9 @@ void Ghosts::DrawGhost() {
 
     frame %= 4;
 
-    ghostFrame = {static_cast<float>(frame) * scaleFactor, rotation, frameWidth, 
+    pacFrame = {static_cast<float>(frame) * scaleFactor, rotation, frameWidth, 
     frameHeight};
  
     hitbox = {x, y, 25, 25};
-    DrawTextureRec(ghostSkin, ghostFrame, position, RAYWHITE);
+    DrawTextureRec(spriteSheet, pacFrame, position, RAYWHITE);
 }
- 
-// void Ghosts::MoveGhost() {
-//     if (whichGhost == red) {
-//         RedAI();
-//     }
-//     else if (whichGhost == blue) {
-//         BlueAI();
-//     }
-//     else if (whichGhost == pink) {
-//         PinkAI();
-//     }
-//     else if (whichGhost == orange) {
-//         OrangeAI();
-//     }
-// }

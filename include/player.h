@@ -15,13 +15,13 @@ protected:
     void RoundtoNearest25(float&);
 public:
     Rectangle hitbox;
-    void DrawEntity();
 };
 
 class Player : public Entity {
 public:
     Player(Texture2D);
     void MovePlayer(bool collision);
+    void DrawPlayer();
 };
 
 #endif

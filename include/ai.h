@@ -3,14 +3,10 @@
 
 #include "raylib.h"
 #include <iostream>
+#include "player.h"
 
-class Ghosts {
+class Ghosts : public Entity {
 private:
-    Texture2D ghostSkin;
-    float x, y;
-    Rectangle hitbox;
-    enum {left, right, up, down, nodir};
-    int currentDirection, nextDirection;
     int possibleDirections[4];
     enum {red, blue, pink, orange};
     int whichGhost;
@@ -20,8 +16,8 @@ private:
     void OrangeAI();
 public:
     Ghosts(Texture2D, int whichGhost);
-    void DrawGhost();
     void MoveGhost();
+    void DrawGhost();
 };
 
 

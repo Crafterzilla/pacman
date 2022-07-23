@@ -12,7 +12,7 @@ Player::Player(Texture2D sprite) {
     this->frame = 0;
 };
 
-void Entity::DrawEntity() {
+void Player::DrawPlayer() {
     Vector2 position = {x, y};
     const int scaleFactor = 25;
     static float rotation = 1.0f;
@@ -124,8 +124,6 @@ void Player::MovePlayer(bool collision) {
     this->y += moveY * speed * GetFrameTime(); 
 }
 
-
-//float 2.4, 2.6
 void Entity::RoundtoNearest25(float& num) {
     num = round(num);
     int lastTwoDigits = (int)num % 100;
