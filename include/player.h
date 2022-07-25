@@ -21,7 +21,7 @@ public:
 class Player : public Entity {
 public:
     Player(Texture2D);
-    void MovePlayer(bool collision);
+    void MovePlayer(bool collision, bool doorCollision);
     // void DrawPlayer();
 };
 

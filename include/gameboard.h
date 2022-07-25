@@ -5,14 +5,17 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <array>
+
 
 class Walls {
 private:
     std::list<Rectangle> walls;
-
+    std::array<Rectangle, 2> doors;
 public:
     Walls(Texture2D);
     bool WallCollsion(Rectangle);
+    bool DoorCollision(Rectangle);
 };
 
 class GameCondtions {

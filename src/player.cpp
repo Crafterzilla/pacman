@@ -52,7 +52,7 @@ void Entity::DrawEntity() {
     DrawTextureRec(spriteSheet, pacFrame, position, RAYWHITE);
 }
 
-void Player::MovePlayer(bool collision) {
+void Player::MovePlayer(bool collision, bool doorCollision) {
     static int moveX = 0, moveY = 0;
     float speed = 200.0f;
 
@@ -112,7 +112,7 @@ void Player::MovePlayer(bool collision) {
         currentDirection = down;
     }
 
-    if (collision) {
+    if (collision || doorCollision) {
         RoundtoNearest25(this->y);
         RoundtoNearest25(this->x);
         //this->x -= 25;

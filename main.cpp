@@ -44,10 +44,11 @@ int main(int argc, char ** argv)
     {
         BeginDrawing();
             ClearBackground(BLACK);
-            //DisplayMouseCords();
-            game.playerAndWallCollsion = walls.WallCollsion(pacman.hitbox);
-            //log(game.playerAndWallCollsion);
-            pacman.MovePlayer(game.playerAndWallCollsion);
+            DisplayMouseCords();
+
+            pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
+            walls.DoorCollision(pacman.hitbox));
+
             balls.BallCollision(pacman.hitbox);
             redGhost.MoveGhost(pacman.hitbox, walls);
             blueGhost.MoveGhost(pacman.hitbox, walls);

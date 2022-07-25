@@ -60,10 +60,15 @@ Walls::Walls(Texture2D maze) {
     const int mazeWidth = 29, mazeHeight = 31;
     Rectangle tmp = {0, 50, 25, 25};
 
+    
+    int doorCounter = 0;
     for (int i = 0; i < mazeHeight; i++) {
         for (int j = 0 ; j < mazeWidth; j++) {
             if (mazeSketch[i][j] == '#') {
                 walls.push_back(tmp);
+            } else if (mazeSketch[i][j] == '-') {
+                doors[doorCounter] = tmp;
+                doorCounter++;
             }
             tmp.x += 25;
         }
@@ -73,24 +78,31 @@ Walls::Walls(Texture2D maze) {
 }
 
 bool Walls::WallCollsion(Rectangle pacman) {
-
     for (std::list<Rectangle>::iterator it = walls.begin();
     it != walls.end(); ++it) {
         if (CheckCollisionRecs(pacman, *it)) {
             return true;
         }
     }
+    return false;
+}
 
+bool Walls::DoorCollision(Rectangle rec) {
+    for (int i = 0; i < doors.size(); i++) {
+        if (CheckCollisionRecs(rec, doors[i]))
+            return true;
+    }
     return false;
 }
 
 Balls::Balls(Walls& walls) {
     ball.reserve(31 * 28);
+    Rectangle middleBox = {250, 350, 25 * 8, 25 * 5};
 
     float x = 0, y = 50;
     for (unsigned int i = 0; i < 31 * 28; i++) {
         Rectangle tmp = {x, y, 5, 5};
-        if (!walls.WallCollsion(tmp)) {
+        if (!walls.WallCollsion(tmp) && !CheckCollisionRecs(tmp, middleBox)) {
             tmp = {x + 12.5f, y + 12.5f, 5, 5};
             ball.push_back(tmp);
         }
