@@ -11,9 +11,13 @@
 class Ghosts : public Entity {
 private:
     enum ghostType {red, blue, pink, orange};
-    int whichGhost;
-    void RedAI(Rectangle& pacman, Walls&);
-    void RedAIScatter();
+    enum Mode{chase, scatter, random, retreat};
+    int whichGhost, mode;
+
+    void PathFind(Rectangle&, Walls&);
+
+
+    void RedAI(Rectangle& pacman, Walls&, int mode);
     void RedAIRandom();
     void RedAiRetreat();
 

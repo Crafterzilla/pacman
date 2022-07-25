@@ -26,8 +26,10 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
 }
 
 void Ghosts::MoveGhost(Rectangle& pacman, Walls& walls) {
+
     if (whichGhost == red) {
-       RedAI(pacman, walls);
+       RedAI(pacman, walls, 0);
+    //    RedAIScatter(walls);
     }
     else if (whichGhost == blue) {
         /* code */
@@ -40,8 +42,60 @@ void Ghosts::MoveGhost(Rectangle& pacman, Walls& walls) {
     }
 }
 
-void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
+void Ghosts::RedAI(Rectangle& pacman, Walls& walls, int mode) {
 
+
+    switch (mode) {
+        case chase: 
+            PathFind(pacman, walls); 
+            break;
+        case scatter: 
+            Rectangle scatterCorner = {31 * 25, 2 * 25, 25, 25};
+            PathFind(scatterCorner, walls);
+            break;
+    }
+
+    static int moveX = 0, moveY = 0;
+    float speed = 200.0f;
+
+    // make the ghost move the best direction
+
+    if (nextDirection == left) {
+        //RoundtoNearest25(this->y);
+        moveX = -1;
+        moveY = 0;
+        currentDirection = left;
+    }
+    else if (nextDirection == right) {
+        //RoundtoNearest25(this->y);
+        moveX = 1;
+        moveY = 0;
+        currentDirection = right;
+    } else if (nextDirection == up) {
+        //RoundtoNearest25(this->x);
+        moveY = -1;
+        moveX = 0;
+        currentDirection = up;
+    } else if (nextDirection == down) {
+        //RoundtoNearest25(this->x);
+        moveY = 1;
+        moveX = 0;
+        currentDirection = down;
+    }
+
+    if (walls.WallCollsion(hitbox)) {
+        RoundtoNearest25(this->y);
+        RoundtoNearest25(this->x);
+        //this->x -= 25;
+        moveX = 0;
+        moveY = 0;
+    }
+
+    this->x += moveX * speed * GetFrameTime();
+    this->y += moveY * speed * GetFrameTime();
+}
+
+void Ghosts::PathFind(Rectangle& rec, Walls& walls) {
     //Project Bertha
 
     //ex: a rectangle will be created in the left. that rectangle will create four tmp
@@ -66,7 +120,6 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     float roundedY = this->y;
     RoundtoNearest25(roundedY);
 
-
     Rectangle tmpRec[4];
     Rectangle previousRec = {roundedX, roundedY, 25, 25};
     float offset = 25.0f;
@@ -80,7 +133,7 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
         if (goToNextDir == sizeNextDir) {
             float possibleDistacnes[4];
 
-            while(CheckCollisionRecs(pacman, path.back()) == false) {
+            while(CheckCollisionRecs(rec, path.back()) == false) {
                 float bestDistance = 1000.0f;
 
                 //Cehck the four tmp rectangles and see if it was an already moved to position or
@@ -94,17 +147,17 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
                 
                 //Find the distance of all four directions. The direction ruled out 
                 //will have larger than usual values
-                possibleDistacnes[right] = sqrt(pow((tmpRec[right].x - pacman.x), 2) + 
-                pow((tmpRec[right].y - pacman.y), 2));
+                possibleDistacnes[right] = sqrt(pow((tmpRec[right].x - rec.x), 2) + 
+                pow((tmpRec[right].y - rec.y), 2));
 
-                possibleDistacnes[left] = sqrt(pow((tmpRec[left].x - pacman.x), 2) + 
-                pow((tmpRec[left].y - pacman.y), 2));
+                possibleDistacnes[left] = sqrt(pow((tmpRec[left].x - rec.x), 2) + 
+                pow((tmpRec[left].y - rec.y), 2));
 
-                possibleDistacnes[up] = sqrt(pow((tmpRec[up].x - pacman.x), 2) + 
-                pow((tmpRec[up].y - pacman.y), 2));
+                possibleDistacnes[up] = sqrt(pow((tmpRec[up].x - rec.x), 2) + 
+                pow((tmpRec[up].y - rec.y), 2));
 
-                possibleDistacnes[down] = sqrt(pow((tmpRec[down].x - pacman.x), 2) + 
-                pow((tmpRec[down].y - pacman.y), 2));
+                possibleDistacnes[down] = sqrt(pow((tmpRec[down].x - rec.x), 2) + 
+                pow((tmpRec[down].y - rec.y), 2));
 
                 //Compare all the distances and find the smallest one
                 //once found, next direction will be the direction found
@@ -178,42 +231,8 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     logStuff("Nextdir: " << nextDirection);
     logStuff("Size of Next Dir Array: " << sizeNextDir);
 
-    static int moveX = 0, moveY = 0;
-    float speed = 200.0f;
-
-    // make the ghost move the best direction
-
-    if (nextDirection == left) {
-        //RoundtoNearest25(this->y);
-        moveX = -1;
-        moveY = 0;
-        currentDirection = left;
-    }
-    else if (nextDirection == right) {
-        //RoundtoNearest25(this->y);
-        moveX = 1;
-        moveY = 0;
-        currentDirection = right;
-    } else if (nextDirection == up) {
-        //RoundtoNearest25(this->x);
-        moveY = -1;
-        moveX = 0;
-        currentDirection = up;
-    } else if (nextDirection == down) {
-        //RoundtoNearest25(this->x);
-        moveY = 1;
-        moveX = 0;
-        currentDirection = down;
-    }
-
-    if (walls.WallCollsion(hitbox)) {
-        RoundtoNearest25(this->y);
-        RoundtoNearest25(this->x);
-        //this->x -= 25;
-        moveX = 0;
-        moveY = 0;
-    }
-
-    this->x += moveX * speed * GetFrameTime();
-    this->y += moveY * speed * GetFrameTime();
 }
+
+
+
+
