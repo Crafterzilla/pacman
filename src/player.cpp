@@ -22,17 +22,19 @@ void Entity::DrawEntity() {
 
     static Rectangle pacFrame = {static_cast<float>(frame), 25, frameWidth, frameHeight};
 
-    if (currentDirection == up) {
+    switch (currentDirection) {
+    case up:
         rotation = scaleFactor * up;
-    }
-    else if (currentDirection == down) {
+        break;
+    case down:
         rotation = scaleFactor * down;
-    } 
-    else if (currentDirection == left) {
+        break;
+    case left:
         rotation = scaleFactor * left;
-    } 
-    else if (currentDirection == right) {
+        break;
+    case right:
         rotation = scaleFactor * right;
+        break;
     }
 
     timer += GetFrameTime();
@@ -144,8 +146,8 @@ void Entity::RoundtoNearest25(float& num) {
             }
             break;
         }
-        lowestNum += 12.5;
-        highestNum += 12.5;
+        lowestNum += 12.5f;
+        highestNum += 12.5f;
         if (i % 2 == 0) {
             roundUp = true;
         } else {

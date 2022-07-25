@@ -11,7 +11,7 @@
 class Ghosts : public Entity {
 private:
     enum ghostType {red, blue, pink, orange};
-    enum Mode{chase, scatter, random, retreat};
+    enum Mode{chase, scatter, scared, retreat};
     int whichGhost, mode;
 
     void PathFind(Rectangle&, Walls&);

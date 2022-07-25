@@ -6,19 +6,19 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
     this->spriteSheet = ghostSkin;
     this->whichGhost = whichGhost;
 
-    if (whichGhost == red) {
+    switch (whichGhost) {
+    case red:
         this->x = 325;
         this->y = 325;
-    }
-    else if (whichGhost == blue) {
+        break;
+    case blue:
         this->x = 350;
         this->y = 325;
-    }
-    else if (whichGhost == pink) {
-        /* code */
-    }
-    else if (whichGhost == orange) {
-        /* code */
+        break;
+    case pink:
+        break;
+    case orange:
+        break;
     }
 
     hitbox = {x, y, 25, 25};
@@ -27,31 +27,32 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
 
 void Ghosts::MoveGhost(Rectangle& pacman, Walls& walls) {
 
-    if (whichGhost == red) {
-       RedAI(pacman, walls, 0);
-    //    RedAIScatter(walls);
-    }
-    else if (whichGhost == blue) {
-        /* code */
-    }
-    else if (whichGhost == pink) {
-        /* code */
-    }
-    else if (whichGhost == orange) {
-        /* code */
+    switch (whichGhost) {
+    case red:
+        RedAI(pacman, walls, 0);
+        break;
+    case blue:
+        break;
+    case pink:
+        break;
+    case orange:
+        break;
     }
 }
 
 void Ghosts::RedAI(Rectangle& pacman, Walls& walls, int mode) {
-
-
     switch (mode) {
         case chase: 
             PathFind(pacman, walls); 
             break;
-        case scatter: 
+        case scatter: {
             Rectangle scatterCorner = {31 * 25, 2 * 25, 25, 25};
             PathFind(scatterCorner, walls);
+        }
+            break;
+        case scared:
+            break;
+        case retreat:
             break;
     }
 
@@ -59,28 +60,27 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls, int mode) {
     float speed = 200.0f;
 
     // make the ghost move the best direction
-
-    if (nextDirection == left) {
-        //RoundtoNearest25(this->y);
-        moveX = -1;
-        moveY = 0;
-        currentDirection = left;
-    }
-    else if (nextDirection == right) {
-        //RoundtoNearest25(this->y);
-        moveX = 1;
-        moveY = 0;
-        currentDirection = right;
-    } else if (nextDirection == up) {
-        //RoundtoNearest25(this->x);
-        moveY = -1;
-        moveX = 0;
-        currentDirection = up;
-    } else if (nextDirection == down) {
-        //RoundtoNearest25(this->x);
-        moveY = 1;
-        moveX = 0;
-        currentDirection = down;
+    switch (nextDirection) {
+        case left:
+            moveX = -1;
+            moveY = 0;
+            currentDirection = left;
+            break;
+        case right:
+            moveX = 1;
+            moveY = 0;
+            currentDirection = right;
+            break;
+        case up:
+            moveY = -1;
+            moveX = 0;
+            currentDirection = up;           
+            break;
+        case down:
+            moveY = 1;
+            moveX = 0;
+            currentDirection = down;
+            break;
     }
 
     if (walls.WallCollsion(hitbox)) {
