@@ -10,7 +10,7 @@
 
 class Ghosts : public Entity {
 private:
-    enum {red, blue, pink, orange};
+    enum ghostType {red, blue, pink, orange};
     int whichGhost;
     void RedAI(Rectangle& pacman, Walls&);
     void BlueAI(Rectangle& pacman, Walls&);

@@ -52,9 +52,9 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     //potential solution could also be to store 25, and whatever direction
     std::list<Rectangle> path;
     std::list<int> pathDirections;
-    enum shouldIresetDirections {wait, yes};
-    // static int nextDir[2], goToNextDir = wait;
-
+    enum shouldIresetDirections {veryFarAwayMode = 4, farMode = 3, mediumMode = 1, closeMode = 0};
+    static int nextDir[1], goToNextDir = 0;
+    int sizeNextDir = sizeof(nextDir) / sizeof(*nextDir);
 
     path.push_back(hitbox);
 
@@ -74,61 +74,92 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     tmpRec[down] = {roundedX, roundedY + offset, 25, 25};
 
     if ((int)this->x % 25 == 0 && (int)this->y % 25 == 0) {
-        // if (goToNextDir == 0)
-        while(CheckCollisionRecs(pacman, path.back()) == false) {
-            float possibleDistacnes[4], bestDistance = 1000.0f;
+        if (goToNextDir == sizeNextDir) {
+            float possibleDistacnes[4], mainDistanceAway = 0.0f;
+            bool firstPass = true;
 
-            for (int i = 0; i < 4; i++) {
-                if (walls.WallCollsion(tmpRec[i]) || CheckCollisionRecs(previousRec, tmpRec[i])) {
-                    tmpRec[i] = {10000.0f, 10000.0f, 0, 0};
+            while(CheckCollisionRecs(pacman, path.back()) == false) {
+                float bestDistance = 1000.0f;
+
+                for (int i = 0; i < 4; i++) {
+                    if (walls.WallCollsion(tmpRec[i]) || CheckCollisionRecs(previousRec, tmpRec[i])) {
+                        tmpRec[i] = {10000.0f, 10000.0f, 0, 0};
+                    }
                 }
+
+                possibleDistacnes[right] = sqrt(pow((tmpRec[right].x - pacman.x), 2) + 
+                pow((tmpRec[right].y - pacman.y), 2));
+
+                possibleDistacnes[left] = sqrt(pow((tmpRec[left].x - pacman.x), 2) + 
+                pow((tmpRec[left].y - pacman.y), 2));
+
+                possibleDistacnes[up] = sqrt(pow((tmpRec[up].x - pacman.x), 2) + 
+                pow((tmpRec[up].y - pacman.y), 2));
+
+                possibleDistacnes[down] = sqrt(pow((tmpRec[down].x - pacman.x), 2) + 
+                pow((tmpRec[down].y - pacman.y), 2));
+
+
+                for (int dir = 0; dir < 4; dir++) {
+                    if (possibleDistacnes[dir] < bestDistance) {
+                        bestDistance = possibleDistacnes[dir];
+                        nextDirection = dir;
+                        if (firstPass) {
+                            mainDistanceAway = possibleDistacnes[dir];
+                            firstPass = false;
+                        }
+                    }
+                }
+
+                pathDirections.push_back(nextDirection);
+
+                std::list<Rectangle>::iterator it = --path.end();
+                previousRec = *it;
+                path.push_back(tmpRec[nextDirection]);
+                if (path.size() > 50)
+                    break;
+
+                tmpRec[right] = {path.back().x + offset, path.back().y, 25, 25};
+                tmpRec[left] = {path.back().x - offset, path.back().y, 25, 25};
+                tmpRec[up] = {path.back().x, path.back().y - offset, 25, 25};
+                tmpRec[down] = {path.back().x, path.back().y + offset, 25, 25};
             }
 
-            possibleDistacnes[right] = sqrt(pow((tmpRec[right].x - pacman.x), 2) + 
-            pow((tmpRec[right].y - pacman.y), 2));
-
-            possibleDistacnes[left] = sqrt(pow((tmpRec[left].x - pacman.x), 2) + 
-            pow((tmpRec[left].y - pacman.y), 2));
-
-            possibleDistacnes[up] = sqrt(pow((tmpRec[up].x - pacman.x), 2) + 
-            pow((tmpRec[up].y - pacman.y), 2));
-
-            possibleDistacnes[down] = sqrt(pow((tmpRec[down].x - pacman.x), 2) + 
-            pow((tmpRec[down].y - pacman.y), 2));
-
-
-            for (int dir = 0; dir < 4; dir++) {
-                if (possibleDistacnes[dir] < bestDistance) {
-                    bestDistance = possibleDistacnes[dir];
-                    nextDirection = dir;
-                }
+            int i = 0;
+            for (std::list<int>::iterator it = pathDirections.begin(); i < sizeNextDir;
+            i++, ++it ) {
+                nextDir[i] = *it;
             }
-            pathDirections.push_back(nextDirection);
+            goToNextDir = 0;
+            nextDirection = nextDir[0];
 
-            std::list<Rectangle>::iterator it = --path.end();
-            previousRec = *it;
-            path.push_back(tmpRec[nextDirection]);
-            if (path.size() > 50)
-                break;
+            // if (mainDistanceAway > 700) {
+            //     sizeNextDir = veryFarAwayMode;
+            // } else if (mainDistanceAway > 600) {
+            //     sizeNextDir = farMode;
+            // } else if (mainDistanceAway > 300) {
+            //     sizeNextDir = mediumMode;
+            // } else {
+            //     sizeNextDir = closeMode;
+            // }
 
-            tmpRec[right] = {path.back().x + offset, path.back().y, 25, 25};
-            tmpRec[left] = {path.back().x - offset, path.back().y, 25, 25};
-            tmpRec[up] = {path.back().x, path.back().y - offset, 25, 25};
-            tmpRec[down] = {path.back().x, path.back().y + offset, 25, 25};
+            // logStuff(mainDistanceAway);
+            // logStuff(sizeNextDir);
+        } else {
+            nextDirection = nextDir[goToNextDir];
+            goToNextDir++;
         }
-        nextDirection = pathDirections.front();
-
-
-        // nextDir[0] = pathDirections.front();
-        // if (pathDirections.size() > 1);
-        //     nextDir[1] = ++pathDirections.front();
     }
+    
 
     for (std::list<Rectangle>::iterator it = path.begin(); it != path.end(); ++it) {
         DrawRectangleRec(*it, RAYWHITE);
     }
-
-    logStuff("path size: " << path.size());
+    logStuff("Goto size: " << goToNextDir);
+    logStuff("num1: " << nextDir[0]);
+    logStuff("num2: " << nextDir[1]);
+    logStuff("num3: " << nextDir[2]);
+    logStuff("num3: " << nextDir[3]);
     logStuff("Nextdir: " << nextDirection);
 
     //movment: if timer is greater than 0.25, than the ai will move 1 pixel to
