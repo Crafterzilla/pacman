@@ -4,11 +4,12 @@
 #include "raylib.h"
 #include <iostream>
 #include <vector>
+#include <list>
 
 class Walls {
 private:
-    Rectangle wall[40];
-    int numOfWAlls = sizeof(wall) / sizeof(*wall);
+    std::list<Rectangle> walls;
+
 public:
     Walls(Texture2D);
     bool WallCollsion(Rectangle);
