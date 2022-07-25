@@ -13,6 +13,10 @@ private:
     enum ghostType {red, blue, pink, orange};
     int whichGhost;
     void RedAI(Rectangle& pacman, Walls&);
+    void RedAIScatter();
+    void RedAIRandom();
+    void RedAiRetreat();
+
     void BlueAI(Rectangle& pacman, Walls&);
     void PinkAI(Rectangle& pacman, Walls&);
     void OrangeAI(Rectangle& pacman, Walls&);
