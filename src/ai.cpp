@@ -11,7 +11,8 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
         this->y = 325;
     }
     else if (whichGhost == blue) {
-        /* code */
+        this->x = 350;
+        this->y = 325;
     }
     else if (whichGhost == pink) {
         /* code */
@@ -21,7 +22,7 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
     }
 
     hitbox = {x, y, 25, 25};
-    currentDirection = right;
+    currentDirection = nodir;
 }
 
 void Ghosts::MoveGhost(Rectangle& pacman, Walls& walls) {
@@ -41,6 +42,8 @@ void Ghosts::MoveGhost(Rectangle& pacman, Walls& walls) {
 
 void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
 
+    //Project Bertha
+
     //ex: a rectangle will be created in the left. that rectangle will create four tmp
     //rectangeles up, down, left, and right. If there is collision, those rectangles will be given
     //null values. Then, with the remaining rectangles, the distance formula will be used to determine the
@@ -52,9 +55,9 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     //potential solution could also be to store 25, and whatever direction
     std::list<Rectangle> path;
     std::list<int> pathDirections;
-    enum shouldIresetDirections {veryFarAwayMode = 4, farMode = 3, mediumMode = 1, closeMode = 0};
-    static int nextDir[1], goToNextDir = 0;
-    int sizeNextDir = sizeof(nextDir) / sizeof(*nextDir);
+    enum shouldIresetDirections {veryFarAwayMode = 10, farMode = 4, mediumMode = 5, closeMode = 3};
+    static int nextDir[10], goToNextDir = 4;
+    static int sizeNextDir = sizeof(nextDir) / sizeof(*nextDir);
 
     path.push_back(hitbox);
 
@@ -75,18 +78,22 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
 
     if ((int)this->x % 25 == 0 && (int)this->y % 25 == 0) {
         if (goToNextDir == sizeNextDir) {
-            float possibleDistacnes[4], mainDistanceAway = 0.0f;
-            bool firstPass = true;
+            float possibleDistacnes[4];
 
             while(CheckCollisionRecs(pacman, path.back()) == false) {
                 float bestDistance = 1000.0f;
 
+                //Cehck the four tmp rectangles and see if it was an already moved to position or
+                //if that rec is in contact with a wall. If so, give them huge numbers so 
+                //that they are too big to pass the distance test
                 for (int i = 0; i < 4; i++) {
                     if (walls.WallCollsion(tmpRec[i]) || CheckCollisionRecs(previousRec, tmpRec[i])) {
                         tmpRec[i] = {10000.0f, 10000.0f, 0, 0};
                     }
                 }
-
+                
+                //Find the distance of all four directions. The direction ruled out 
+                //will have larger than usual values
                 possibleDistacnes[right] = sqrt(pow((tmpRec[right].x - pacman.x), 2) + 
                 pow((tmpRec[right].y - pacman.y), 2));
 
@@ -99,26 +106,30 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
                 possibleDistacnes[down] = sqrt(pow((tmpRec[down].x - pacman.x), 2) + 
                 pow((tmpRec[down].y - pacman.y), 2));
 
-
+                //Compare all the distances and find the smallest one
+                //once found, next direction will be the direction found
                 for (int dir = 0; dir < 4; dir++) {
                     if (possibleDistacnes[dir] < bestDistance) {
                         bestDistance = possibleDistacnes[dir];
                         nextDirection = dir;
-                        if (firstPass) {
-                            mainDistanceAway = possibleDistacnes[dir];
-                            firstPass = false;
-                        }
                     }
                 }
 
+                //Store that direction into a list of directions
                 pathDirections.push_back(nextDirection);
-
+                
+                //make the second to last rectnagle the previous rectangle
                 std::list<Rectangle>::iterator it = --path.end();
                 previousRec = *it;
+
+                //In case of some errors which may happen, break of the function
+                //if size is greater than 50. This will save the game from
+                //crashing tho I propbably should find why it was crashing ngl
                 path.push_back(tmpRec[nextDirection]);
                 if (path.size() > 50)
                     break;
 
+                //Make the new tmp rec based off the rec just found
                 tmpRec[right] = {path.back().x + offset, path.back().y, 25, 25};
                 tmpRec[left] = {path.back().x - offset, path.back().y, 25, 25};
                 tmpRec[up] = {path.back().x, path.back().y - offset, 25, 25};
@@ -133,21 +144,21 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
             goToNextDir = 0;
             nextDirection = nextDir[0];
 
-            // if (mainDistanceAway > 700) {
-            //     sizeNextDir = veryFarAwayMode;
-            // } else if (mainDistanceAway > 600) {
-            //     sizeNextDir = farMode;
-            // } else if (mainDistanceAway > 300) {
-            //     sizeNextDir = mediumMode;
-            // } else {
-            //     sizeNextDir = closeMode;
-            // }
+            if (pathDirections.size() > 20) {
+                sizeNextDir = veryFarAwayMode;
+            } else if (pathDirections.size() > 12) {
+                sizeNextDir = farMode;
+            } else if (pathDirections.size() > 5) {
+                sizeNextDir = mediumMode;
+            } else {
+                sizeNextDir = closeMode;
+            }
 
             // logStuff(mainDistanceAway);
             // logStuff(sizeNextDir);
         } else {
-            nextDirection = nextDir[goToNextDir];
             goToNextDir++;
+            nextDirection = nextDir[goToNextDir];
         }
     }
     
@@ -155,18 +166,17 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     for (std::list<Rectangle>::iterator it = path.begin(); it != path.end(); ++it) {
         DrawRectangleRec(*it, RAYWHITE);
     }
-    logStuff("Goto size: " << goToNextDir);
-    logStuff("num1: " << nextDir[0]);
-    logStuff("num2: " << nextDir[1]);
-    logStuff("num3: " << nextDir[2]);
-    logStuff("num3: " << nextDir[3]);
+    logStuff("Goto num: " << goToNextDir);
+
+    for (int i = 0; i < sizeNextDir; i++) {
+        logStuff("num" << i << ": " << nextDir[i]);
+    }
+    // logStuff("num1: " << nextDir[0]);
+    // logStuff("num2: " << nextDir[1]);
+    // logStuff("num3: " << nextDir[2]);
+    // logStuff("num3: " << nextDir[3]);
     logStuff("Nextdir: " << nextDirection);
-
-    //movment: if timer is greater than 0.25, than the ai will move 1 pixel to
-    //whatever nextDir is. Once moved 25 pixels, pxielCounter will be reset back to 25
-    //and new nextDir will be used
-
-
+    logStuff("Size of Next Dir Array: " << sizeNextDir);
 
     static int moveX = 0, moveY = 0;
     float speed = 200.0f;
@@ -205,7 +215,5 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls) {
     }
 
     this->x += moveX * speed * GetFrameTime();
-    this->y += moveY * speed * GetFrameTime(); 
-
-    // //logStuff();
+    this->y += moveY * speed * GetFrameTime();
 }
