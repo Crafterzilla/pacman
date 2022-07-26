@@ -11,7 +11,6 @@ int main(int argc, char ** argv)
 {
     const int tileScaleFactor = 25;
     const int widthRes = 28 * tileScaleFactor, lengthRes = 36 * tileScaleFactor;
-    const int mazeWidth = 28 * tileScaleFactor, mazelength = 31 * tileScaleFactor;
 
     InitWindow(widthRes, lengthRes, "Pac-Mans");
 
@@ -21,6 +20,8 @@ int main(int argc, char ** argv)
 
     Texture2D boardMaze = LoadTexture("./img/board.png");
     Texture2D pacmanSprite = LoadTexture("./img/pacmanSprites.png");
+
+    SetRandomSeed(time(0));
 
     //Ghosts textures
     Texture2D redGhostTex = LoadTexture("./img/redGhost.png");
@@ -50,12 +51,12 @@ int main(int argc, char ** argv)
             walls.DoorCollision(pacman.hitbox));
 
             balls.BallCollision(pacman.hitbox);
-            redGhost.MoveGhost(pacman.hitbox, walls);
-            blueGhost.MoveGhost(pacman.hitbox, walls);
+            redGhost.MoveGhost(pacman, walls);
+            pinkGhost.MoveGhost(pacman, walls);
 
             pacman.DrawEntity();
             redGhost.DrawEntity();
-            blueGhost.DrawEntity();
+            pinkGhost.DrawEntity();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             balls.DrawBalls();
             DrawGrid(widthRes, lengthRes, tileScaleFactor);

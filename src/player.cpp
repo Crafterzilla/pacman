@@ -33,6 +33,7 @@ void Entity::DrawEntity() {
         rotation = scaleFactor * left;
         break;
     case right:
+    case nodir:
         rotation = scaleFactor * right;
         break;
     }
@@ -50,10 +51,11 @@ void Entity::DrawEntity() {
  
     hitbox = {x, y, 25, 25};
     DrawTextureRec(spriteSheet, pacFrame, position, RAYWHITE);
+    logStuff(currentDirection);
 }
 
 void Player::MovePlayer(bool collision, bool doorCollision) {
-    static int moveX = 0, moveY = 0;
+    // static int moveX = 0, moveY = 0;
     float speed = 200.0f;
 
     //Start of Game Movement
@@ -69,10 +71,10 @@ void Player::MovePlayer(bool collision, bool doorCollision) {
     }
 
     //Store the next direction into the variable for later use
-    if (IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP) && currentDirection != nodir) {
+    if (IsKeyPressed(KEY_W) || (IsKeyPressed(KEY_UP) && currentDirection != nodir)) {
         nextDirection = up;
     }
-    if (IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN) && currentDirection != nodir) {
+    if (IsKeyPressed(KEY_S) || (IsKeyPressed(KEY_DOWN) && currentDirection != nodir)) {
         nextDirection = down;
     }
     if (IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
@@ -86,26 +88,30 @@ void Player::MovePlayer(bool collision, bool doorCollision) {
     //and wait until y is divisable by 25 to go up
 
     //Wait until divisbale or if opposite direction turn around
-    if ((((int)this->y % 25 == 0) || (currentDirection == right)) && nextDirection == left) {
+    if ((((int)this->y % 25 == 0) || (currentDirection == right)) && nextDirection == left && currentDirection
+    != nodir) {
         RoundtoNearest25(this->y);
         moveX = -1;
         moveY = 0;
         currentDirection = left;
     }
-    if ((((int)this->y % 25 == 0) || (currentDirection == left)) && nextDirection == right) {
+    if ((((int)this->y % 25 == 0) || (currentDirection == left)) && nextDirection == right && currentDirection
+    != nodir) {
         RoundtoNearest25(this->y);
         moveX = 1;
         moveY = 0;
         currentDirection = right;
     }
 
-    if ((((int)this->x % 25 == 0) || (currentDirection == down)) && nextDirection == up) {
+    if ((((int)this->x % 25 == 0) || (currentDirection == down)) && nextDirection == up && currentDirection
+    != nodir) {
         RoundtoNearest25(this->x);
         moveY = -1;
         moveX = 0;
         currentDirection = up;
     }
-    if ((((int)this->x % 25 == 0) || (currentDirection == up)) && nextDirection == down) {
+    if ((((int)this->x % 25 == 0) || (currentDirection == up)) && nextDirection == down && currentDirection
+    != nodir) {
         RoundtoNearest25(this->x);
         moveY = 1;
         moveX = 0;
@@ -125,8 +131,8 @@ void Player::MovePlayer(bool collision, bool doorCollision) {
     else if (this->y == 400 && this-> x > 700)
         this->x = 0;
 
-    logStuff(x);
-    logStuff(y);
+    // logStuff(x);
+    // logStuff(y);
     this->x += moveX * speed * GetFrameTime();
     this->y += moveY * speed * GetFrameTime(); 
 }

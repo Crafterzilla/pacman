@@ -9,54 +9,43 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
     switch (whichGhost) {
     case red:
         this->x = 325;
-        this->y = 325;
+        this->y = 400;
         break;
     case blue:
         this->x = 350;
         this->y = 325;
         break;
     case pink:
+        this->x = 300;
+        this->y = 400;
         break;
     case orange:
         break;
     }
 
-    hitbox = {x, y, 25, 25};
-    currentDirection = nodir;
+    this->hitbox = {x, y, 25, 25};
+    this->currentDirection = nodir;
+    this->nextDirection = nodir;
+    this->mode = gameStart;
+    this->canGoThroughDoor = true;
 }
 
-void Ghosts::MoveGhost(Rectangle& pacman, Walls& walls) {
+void Ghosts::MoveGhost(Player& pacman, Walls& walls) {
 
     switch (whichGhost) {
     case red:
-        RedAI(pacman, walls, 0);
+        RedAI(pacman, walls);
         break;
     case blue:
         break;
     case pink:
+        PinkAI(pacman, walls);
         break;
     case orange:
         break;
     }
-}
 
-void Ghosts::RedAI(Rectangle& pacman, Walls& walls, int mode) {
-    switch (mode) {
-        case chase: 
-            PathFind(pacman, walls); 
-            break;
-        case scatter: {
-            Rectangle scatterCorner = {31 * 25, 2 * 25, 25, 25};
-            PathFind(scatterCorner, walls);
-        }
-            break;
-        case scared:
-            break;
-        case retreat:
-            break;
-    }
-
-    static int moveX = 0, moveY = 0;
+    // static int moveX = 0, moveY = 0;
     float speed = 200.0f;
 
     // make the ghost move the best direction
@@ -83,7 +72,8 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls, int mode) {
             break;
     }
 
-    if (walls.WallCollsion(hitbox)) {
+    if (walls.WallCollsion(hitbox) || 
+    (!canGoThroughDoor && walls.DoorCollision(hitbox))) {
         RoundtoNearest25(this->y);
         RoundtoNearest25(this->x);
         //this->x -= 25;
@@ -93,6 +83,88 @@ void Ghosts::RedAI(Rectangle& pacman, Walls& walls, int mode) {
 
     this->x += moveX * speed * GetFrameTime();
     this->y += moveY * speed * GetFrameTime();
+}
+
+void Ghosts::RedAI(Player& pacman, Walls& walls) {
+    switch (mode) {
+        case chase: 
+            PathFind(pacman.hitbox, walls); 
+            break;
+        case scatter: {
+            Rectangle scatterCorner = {31 * 25, 2 * 25, 25, 25};
+            PathFind(scatterCorner, walls);
+        }
+            break;
+        case scared: {
+            int randX = 0, randY = 0;
+            randX = GetRandomValue(0, 700);
+            randY = GetRandomValue(50, 800);
+            Rectangle random = {randX, randY, 25, 25};
+            PathFind(random, walls);
+        }
+            break;
+        case retreat:
+            break;
+        case gameStart: {
+            Rectangle startRec = {400, 325, 25, 25};
+            PathFind(startRec, walls);
+            if (CheckCollisionRecs(startRec, hitbox)) {
+                mode = chase;
+                canGoThroughDoor = false;
+            }
+        }
+            break;
+    }
+    logStuff(mode);
+}
+
+void Ghosts::PinkAI(Player& pacman, Walls& walls) {
+    switch (mode) {
+        case chase: {
+            Rectangle fourAwayPacmanHitbox = {0, 0, 25, 25};
+            switch(pacman.currentDirection) {
+                case right:
+                case nodir:
+                    fourAwayPacmanHitbox = {pacman.hitbox.x + 100, pacman.hitbox.y, 25, 25};
+                    break;
+                case left:
+                    fourAwayPacmanHitbox = {pacman.hitbox.x - 100, pacman.hitbox.y, 25, 25};
+                    break;
+                case up:
+                    fourAwayPacmanHitbox = {pacman.hitbox.x, pacman.hitbox.y - 100, 25, 25};
+                    break;
+                case down:
+                    fourAwayPacmanHitbox = {pacman.hitbox.x, pacman.hitbox.y + 100, 25, 25};
+                    break;
+            }
+            PathFind(fourAwayPacmanHitbox, walls);
+        }
+            break;
+        case scatter: {
+            Rectangle scatterCorner = {50, 50, 25, 25};
+            PathFind(scatterCorner, walls);
+        }
+            break;
+        case scared: {
+            int randX = 0, randY = 0;
+            randX = GetRandomValue(0, 700);
+            randY = GetRandomValue(50, 800);
+            Rectangle random = {randX, randY, 25, 25};
+            PathFind(random, walls);
+        }
+            break;
+        case retreat:
+            break;
+        case gameStart: {
+            Rectangle startRec = {400, 325, 25, 25};
+            PathFind(startRec, walls);
+            if (CheckCollisionRecs(startRec, hitbox)) {
+                mode = chase;
+                canGoThroughDoor = false;
+            }
+        }
+            break;
+    }
 }
 
 void Ghosts::PathFind(Rectangle& rec, Walls& walls) {
@@ -110,8 +182,6 @@ void Ghosts::PathFind(Rectangle& rec, Walls& walls) {
     std::list<Rectangle> path;
     std::list<int> pathDirections;
     enum shouldIresetDirections {veryFarAwayMode = 10, farMode = 4, mediumMode = 5, closeMode = 3};
-    static int nextDir[10], goToNextDir = 4;
-    static int sizeNextDir = sizeof(nextDir) / sizeof(*nextDir);
 
     path.push_back(hitbox);
 
@@ -214,22 +284,18 @@ void Ghosts::PathFind(Rectangle& rec, Walls& walls) {
             nextDirection = nextDir[goToNextDir];
         }
     }
-    
+    //Debug tools
 
-    for (std::list<Rectangle>::iterator it = path.begin(); it != path.end(); ++it) {
-        DrawRectangleRec(*it, RAYWHITE);
-    }
-    logStuff("Goto num: " << goToNextDir);
+    // for (std::list<Rectangle>::iterator it = path.begin(); it != path.end(); ++it) {
+    //     DrawRectangleRec(*it, RAYWHITE);
+    // }
+    // logStuff("Goto num: " << goToNextDir);
 
-    for (int i = 0; i < sizeNextDir; i++) {
-        logStuff("num" << i << ": " << nextDir[i]);
-    }
-    // logStuff("num1: " << nextDir[0]);
-    // logStuff("num2: " << nextDir[1]);
-    // logStuff("num3: " << nextDir[2]);
-    // logStuff("num3: " << nextDir[3]);
-    logStuff("Nextdir: " << nextDirection);
-    logStuff("Size of Next Dir Array: " << sizeNextDir);
+    // for (int i = 0; i < sizeNextDir; i++) {
+    //     logStuff("num" << i << ": " << nextDir[i]);
+    // }
+    // logStuff("Nextdir: " << nextDirection);
+    // logStuff("Size of Next Dir Array: " << sizeNextDir);
 
 }
 

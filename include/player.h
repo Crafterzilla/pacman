@@ -10,12 +10,13 @@ class Entity {
 protected:
     Texture2D spriteSheet;
     float x, y, timer;
-    int currentDirection, nextDirection, frame;
+    int nextDirection, frame, moveX = 0, moveY = 0;
     enum Direction {right, left, down, up, nodir};
     void RoundtoNearest25(float&);
 public:
     void DrawEntity();
     Rectangle hitbox;
+    int currentDirection;
 };
 
 class Player : public Entity {
