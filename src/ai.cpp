@@ -20,6 +20,8 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
         this->y = 400;
         break;
     case orange:
+        this->x = 275;
+        this->y = 400;
         break;
     }
 
@@ -42,6 +44,7 @@ void Ghosts::MoveGhost(Player& pacman, Walls& walls) {
         PinkAI(pacman, walls);
         break;
     case orange:
+        OrangeAI(pacman, walls);
         break;
     }
 
@@ -72,8 +75,12 @@ void Ghosts::MoveGhost(Player& pacman, Walls& walls) {
             break;
     }
 
+    Rectangle pipe1 = {-25, 400, 25, 25}, pipe2 = {700, 400, 25, 25};
+
     if (walls.WallCollsion(hitbox) || 
-    (!canGoThroughDoor && walls.DoorCollision(hitbox))) {
+    (!canGoThroughDoor && walls.DoorCollision(hitbox)) ||
+    (CheckCollisionRecs(pipe1, hitbox) || CheckCollisionRecs(pipe2, hitbox))
+    ) {
         RoundtoNearest25(this->y);
         RoundtoNearest25(this->x);
         //this->x -= 25;
@@ -115,7 +122,6 @@ void Ghosts::RedAI(Player& pacman, Walls& walls) {
         }
             break;
     }
-    logStuff(mode);
 }
 
 void Ghosts::PinkAI(Player& pacman, Walls& walls) {
@@ -142,6 +148,46 @@ void Ghosts::PinkAI(Player& pacman, Walls& walls) {
             break;
         case scatter: {
             Rectangle scatterCorner = {50, 50, 25, 25};
+            PathFind(scatterCorner, walls);
+        }
+            break;
+        case scared: {
+            int randX = 0, randY = 0;
+            randX = GetRandomValue(0, 700);
+            randY = GetRandomValue(50, 800);
+            Rectangle random = {randX, randY, 25, 25};
+            PathFind(random, walls);
+        }
+            break;
+        case retreat:
+            break;
+        case gameStart: {
+            Rectangle startRec = {400, 325, 25, 25};
+            PathFind(startRec, walls);
+            if (CheckCollisionRecs(startRec, hitbox)) {
+                mode = chase;
+                canGoThroughDoor = false;
+            }
+        }
+            break;
+    }
+}
+
+void Ghosts::OrangeAI(Player& pacman, Walls& walls) {
+    float distance = sqrt(pow((pacman.hitbox.x - hitbox.x), 2) + 
+    pow((pacman.hitbox.y - hitbox.y), 2));
+
+    if (distance > 250 && mode != gameStart)
+        mode = chase;
+    else if (distance < 250 && mode != gameStart)
+        mode = scatter;
+
+    switch (mode) {
+        case chase:
+            PathFind(pacman.hitbox, walls); 
+            break;
+        case scatter: {
+            Rectangle scatterCorner = {25, 775, 25, 25};
             PathFind(scatterCorner, walls);
         }
             break;
