@@ -120,8 +120,13 @@ void Player::MovePlayer(bool collision, bool doorCollision) {
         moveY = 0;
     }
 
-    // logStuff(x);
-    // logStuff(y);
+    if (this->y == 400 && this->x < 0)
+        this->x = 700;
+    else if (this->y == 400 && this-> x > 700)
+        this->x = 0;
+
+    logStuff(x);
+    logStuff(y);
     this->x += moveX * speed * GetFrameTime();
     this->y += moveY * speed * GetFrameTime(); 
 }
