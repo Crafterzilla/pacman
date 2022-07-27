@@ -52,12 +52,22 @@ int main(int argc, char ** argv)
 
             pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
             walls.DoorCollision(pacman.hitbox));
+
+
+            redGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
+            pinkGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
+            orangeGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
+            blueGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
+
             balls.BallCollision(pacman.hitbox);
+            balls.RemoveBigBall(pacman.hitbox);
 
             redGhost.MoveGhost(pacman, redGhost.hitbox, walls);
             pinkGhost.MoveGhost(pacman, redGhost.hitbox, walls);
             orangeGhost.MoveGhost(pacman, redGhost.hitbox, walls);
             blueGhost.MoveGhost(pacman, redGhost.hitbox, walls);
+
+            balls.DrawBalls();
 
             pacman.DrawEntity();
             redGhost.DrawEntity();
@@ -66,7 +76,6 @@ int main(int argc, char ** argv)
             blueGhost.DrawEntity();
 
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
-            balls.DrawBalls();
 
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();

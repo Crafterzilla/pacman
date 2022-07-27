@@ -17,7 +17,9 @@ private:
     enum Mode{chase, scatter, scared, retreat, gameStart};
     int whichGhost, mode;
     float speed;
-    float modeTimer;
+
+
+    float modeTimer, scaredTimer;
 
     bool canGoThroughDoor;
 
@@ -42,6 +44,7 @@ public:
     void MoveGhost(const Player& pacman, const Rectangle& redGhost,
     const Walls& walls);
     void DrawGhost();
+    void CheckConditions(bool);
 };
 
 

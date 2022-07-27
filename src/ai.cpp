@@ -35,7 +35,14 @@ Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, 
     this->mode = gameStart;
     this->canGoThroughDoor = true;
     this->timer = 0.0f;
+    //this->scaredTimer = 0.0f;
+    this->modeTimer = 0.0f;
     this->speed = 200.0f;
+}
+
+void Ghosts::CheckConditions(bool hasPacmanEatenABigBall) {
+    if (hasPacmanEatenABigBall)
+        mode = scared;
 }
 
 void Ghosts::MoveGhost(const Player& pacman, const Rectangle& redGhost, const Walls& walls) {
@@ -105,6 +112,15 @@ void Ghosts::ModeChanger() {
             mode = scatter;
         else
             mode = chase;
+
+        scaredTimer = 0.0f;
+    }
+    else if (mode == scared) {
+        scaredTimer += GetFrameTime();
+        if (scaredTimer > 7.0f) {
+            scaredTimer = 0;
+            mode = chase;
+        }
     }
     if (modeTimer > 10.0f)
         modeTimer = 0.0f;
@@ -112,12 +128,14 @@ void Ghosts::ModeChanger() {
 
 void Ghosts::RetreatMode(const Walls& walls) {
         canGoThroughDoor = true;
-        Rectangle retreatRec = {350, 400, 25, 25};
+        Rectangle retreatRec = {275, 375, 25 * 3, 25 * 6};
+
         PathFind(retreatRec, walls);
         if (CheckCollisionRecs(retreatRec, hitbox)) {
             mode = gameStart;
         }
         spriteSheet = floatEyes;
+        scaredTimer = 0.0f;
 }
 
 void Ghosts::ScaredMode(const Player& pacman, const Walls& walls) {
@@ -134,13 +152,14 @@ void Ghosts::ScaredMode(const Player& pacman, const Walls& walls) {
 }
 
 void Ghosts::GameStartMode(const Walls& walls) {
-    Rectangle startRec = {400, 325, 25, 25};
+    Rectangle startRec = {225, 325, 250, 5};
     PathFind(startRec, walls);
     if (CheckCollisionRecs(startRec, hitbox)) {
         mode = chase;
         canGoThroughDoor = false;
     }
     spriteSheet = regGhost;
+    scaredTimer = 0.0f;
 }
 
 void Ghosts::RedAI(const Player& pacman, const Walls& walls) {
@@ -194,6 +213,7 @@ void Ghosts::PinkAI(const Player& pacman, const Walls& walls) {
             Rectangle scatterCorner = {50, 50, 25, 25};
             PathFind(scatterCorner, walls);
         }
+            break;
         spriteSheet = regGhost;
             break;
         case scared:
@@ -212,9 +232,9 @@ void Ghosts::OrangeAI(const Player& pacman, const Walls& walls) {
     float distance = sqrt(pow((pacman.hitbox.x - hitbox.x), 2) + 
     pow((pacman.hitbox.y - hitbox.y), 2));
 
-    if (distance > 250 && mode != gameStart)
+    if (distance > 250 && (mode == chase || mode == scatter))
         mode = chase;
-    else if (distance < 250 && mode != gameStart)
+    else if (distance < 250 && (mode == chase || mode == scatter))
         mode = scatter;
 
     switch (mode) {
