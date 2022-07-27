@@ -13,6 +13,7 @@ protected:
     int nextDirection, frame, moveX = 0, moveY = 0;
     enum Direction {right, left, down, up, nodir};
     void RoundtoNearest25(float&);
+    Vector2 Rotate180DegreesFromOrigin(Vector2, Vector2);
 public:
     void DrawEntity();
     Rectangle hitbox;
