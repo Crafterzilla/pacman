@@ -2,8 +2,12 @@
 
 #define logStuff(x) std::cout << x << "\n";
 
-Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
+Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, int whichGhost) {
     this->spriteSheet = ghostSkin;
+    this->regGhost = ghostSkin;
+
+    this->scaredGhost = scaredGhost;
+    this->floatEyes = floatEyes;
     this->whichGhost = whichGhost;
 
     switch (whichGhost) {
@@ -30,10 +34,14 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
     this->nextDirection = nodir;
     this->mode = gameStart;
     this->canGoThroughDoor = true;
+    this->timer = 0.0f;
+    this->speed = 200.0f;
 }
 
 void Ghosts::MoveGhost(Player& pacman, Rectangle& redGhost, Walls& walls) {
+    ModeChanger();
 
+    //Choose right aiType for ghost
     switch (whichGhost) {
     case red:
         RedAI(pacman, walls);
@@ -48,9 +56,6 @@ void Ghosts::MoveGhost(Player& pacman, Rectangle& redGhost, Walls& walls) {
         OrangeAI(pacman, walls);
         break;
     }
-
-    // static int moveX = 0, moveY = 0;
-    float speed = 200.0f;
 
     // make the ghost move the best direction
     switch (nextDirection) {
@@ -76,7 +81,7 @@ void Ghosts::MoveGhost(Player& pacman, Rectangle& redGhost, Walls& walls) {
             break;
     }
 
-    Rectangle pipe1 = {-25, 400, 25, 25}, pipe2 = {700, 400, 25, 25};
+    Rectangle pipe1 = {0, 400, 25, 25}, pipe2 = {700, 400, 25, 25};
 
     if (walls.WallCollsion(hitbox) || 
     (!canGoThroughDoor && walls.DoorCollision(hitbox)) ||
@@ -93,34 +98,67 @@ void Ghosts::MoveGhost(Player& pacman, Rectangle& redGhost, Walls& walls) {
     this->y += moveY * speed * GetFrameTime();
 }
 
+void Ghosts::ModeChanger() {
+    modeTimer += GetFrameTime();
+    if (mode == chase || mode == scatter) {
+        if (modeTimer > 6.5f)
+            mode = scatter;
+        else
+            mode = chase;
+    }
+    if (modeTimer > 10.0f)
+        modeTimer = 0.0f;
+}
+
+void Ghosts::RetreatMode(Walls& walls) {
+        canGoThroughDoor = true;
+        Rectangle retreatRec = {350, 400, 25, 25};
+        PathFind(retreatRec, walls);
+        if (CheckCollisionRecs(retreatRec, hitbox)) {
+            mode = gameStart;
+        }
+        spriteSheet = floatEyes;
+}
+
+void Ghosts::ScaredMode(Walls& walls) {
+    int randX = 0, randY = 0;
+    randX = GetRandomValue(0, 700);
+    randY = GetRandomValue(50, 800);
+    Rectangle random = {randX, randY, 25, 25};
+    PathFind(random, walls);
+    spriteSheet = scaredGhost;
+}
+
+void Ghosts::GameStartMode(Walls& walls) {
+    Rectangle startRec = {400, 325, 25, 25};
+    PathFind(startRec, walls);
+    if (CheckCollisionRecs(startRec, hitbox)) {
+        mode = chase;
+        canGoThroughDoor = false;
+    }
+    spriteSheet = regGhost;
+}
+
 void Ghosts::RedAI(Player& pacman, Walls& walls) {
     switch (mode) {
         case chase: 
-            PathFind(pacman.hitbox, walls); 
+            PathFind(pacman.hitbox, walls);
+            spriteSheet = regGhost;
             break;
         case scatter: {
             Rectangle scatterCorner = {31 * 25, 2 * 25, 25, 25};
             PathFind(scatterCorner, walls);
+            spriteSheet = regGhost;
         }
             break;
-        case scared: {
-            int randX = 0, randY = 0;
-            randX = GetRandomValue(0, 700);
-            randY = GetRandomValue(50, 800);
-            Rectangle random = {randX, randY, 25, 25};
-            PathFind(random, walls);
-        }
+        case scared:
+            ScaredMode(walls);
             break;
         case retreat:
+            RetreatMode(walls);
             break;
-        case gameStart: {
-            Rectangle startRec = {400, 325, 25, 25};
-            PathFind(startRec, walls);
-            if (CheckCollisionRecs(startRec, hitbox)) {
-                mode = chase;
-                canGoThroughDoor = false;
-            }
-        }
+        case gameStart:
+            GameStartMode(walls);
             break;
     }
 }
@@ -146,30 +184,22 @@ void Ghosts::PinkAI(Player& pacman, Walls& walls) {
             }
             PathFind(fourAwayPacmanHitbox, walls);
         }
+        spriteSheet = regGhost;
             break;
         case scatter: {
             Rectangle scatterCorner = {50, 50, 25, 25};
             PathFind(scatterCorner, walls);
         }
+        spriteSheet = regGhost;
             break;
-        case scared: {
-            int randX = 0, randY = 0;
-            randX = GetRandomValue(0, 700);
-            randY = GetRandomValue(50, 800);
-            Rectangle random = {randX, randY, 25, 25};
-            PathFind(random, walls);
-        }
+        case scared:
+            ScaredMode(walls);
             break;
         case retreat:
+            RetreatMode(walls);
             break;
-        case gameStart: {
-            Rectangle startRec = {400, 325, 25, 25};
-            PathFind(startRec, walls);
-            if (CheckCollisionRecs(startRec, hitbox)) {
-                mode = chase;
-                canGoThroughDoor = false;
-            }
-        }
+        case gameStart:
+            GameStartMode(walls);
             break;
     }
 }
@@ -186,30 +216,22 @@ void Ghosts::OrangeAI(Player& pacman, Walls& walls) {
     switch (mode) {
         case chase:
             PathFind(pacman.hitbox, walls); 
+            spriteSheet = regGhost;
             break;
         case scatter: {
             Rectangle scatterCorner = {25, 775, 25, 25};
             PathFind(scatterCorner, walls);
         }
+        spriteSheet = regGhost;
             break;
-        case scared: {
-            int randX = 0, randY = 0;
-            randX = GetRandomValue(0, 700);
-            randY = GetRandomValue(50, 800);
-            Rectangle random = {randX, randY, 25, 25};
-            PathFind(random, walls);
-        }
+        case scared:
+            ScaredMode(walls);
             break;
         case retreat:
+            RetreatMode(walls);
             break;
-        case gameStart: {
-            Rectangle startRec = {400, 325, 25, 25};
-            PathFind(startRec, walls);
-            if (CheckCollisionRecs(startRec, hitbox)) {
-                mode = chase;
-                canGoThroughDoor = false;
-            }
-        }
+        case gameStart:
+            GameStartMode(walls);
             break;
     }
 }
@@ -241,31 +263,23 @@ void Ghosts::BlueAI(Player& pacman, Rectangle& redGhost, Walls& walls) {
             Rectangle rotatedTargetRec = {rotatedTarget.x, rotatedTarget.y, 25, 25};
 
             PathFind(rotatedTargetRec, walls);
+            spriteSheet = regGhost;
         }
             break;
         case scatter: {
-            Rectangle scatterCorner = {50, 50, 25, 25};
+            Rectangle scatterCorner = {700, 775, 25, 25};
             PathFind(scatterCorner, walls);
+            spriteSheet = regGhost;
         }
             break;
-        case scared: {
-            int randX = 0, randY = 0;
-            randX = GetRandomValue(0, 700);
-            randY = GetRandomValue(50, 800);
-            Rectangle random = {randX, randY, 25, 25};
-            PathFind(random, walls);
-        }
+        case scared:
+            ScaredMode(walls);
             break;
         case retreat:
+            RetreatMode(walls);
             break;
-        case gameStart: {
-            Rectangle startRec = {400, 325, 25, 25};
-            PathFind(startRec, walls);
-            if (CheckCollisionRecs(startRec, hitbox)) {
-                mode = chase;
-                canGoThroughDoor = false;
-            }
-        }
+        case gameStart:
+            GameStartMode(walls);
             break;
     }
 }
