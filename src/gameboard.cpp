@@ -22,42 +22,6 @@ GameCondtions::GameCondtions() {
 }
 
 Walls::Walls(Texture2D maze) {
-    const int scaleFactor = 25;
-    const char mazeSketch[31][29] =
-    {
-        "############################",
-        "#            ##            #",
-        "# #### ##### ## ##### #### #",
-        "# #### ##### ## ##### #### #",
-        "# #### ##### ## ##### #### #",
-        "#                          #",
-        "# #### ## ######## ## #### #",
-        "# #### ## ######## ## #### #",
-        "#      ##    ##    ##      #",
-        "###### ##### ## ##### ######",
-        "###### ##### ## ##### ######",
-        "###### ##          ## ######",
-        "###### ## ###--### ## ######",
-        "###### ## ###  ### ## ######",
-        "          #      #          ",
-        "###### ## ######## ## ######",
-        "###### ## ######## ## ######",
-        "###### ##          ## ######",
-        "###### ## ######## ## ######",
-        "###### ## ######## ## ######",
-        "#            ##            #",
-        "# #### ##### ## ##### #### #",
-        "# #### ##### ## ##### #### #",
-        "#   ##                ##   #",
-        "### ## ## ######## ## ## ###",
-        "### ## ## ######## ## ## ###",
-        "#      ##    ##    ##      #",
-        "# ########## ## ########## #",
-        "# ########## ## ########## #",
-        "#                          #",
-        "############################"
-    };
-    const int mazeWidth = 29, mazeHeight = 31;
     Rectangle tmp = {0, 50, 25, 25};
 
     
@@ -96,13 +60,31 @@ bool Walls::DoorCollision(Rectangle rec) const{
 }
 
 Balls::Balls(Walls& walls) {
+    //find big balls and make big balls
+    Rectangle tmp = {0, 50, 12.5f, 12.5f};
+    float x = 0, y = 50;
+
+    for (int i = 0; i < mazeHeight; i++) {
+        for (int j = 0 ; j < mazeWidth; j++) {
+            if (mazeSketch[i][j] == 'o') {
+                tmp = {x + 9.0f, y + 9.0f, 10, 10};
+                bigBalls.push_back(tmp);
+            }
+            x += 25;
+        }
+        x = 0;
+        y += 25;
+    }
+
+    //make smalls anywhere else 
     ball.reserve(31 * 28);
     Rectangle middleBox = {250, 350, 25 * 8, 25 * 5};
+    x = 0, y = 50;
 
-    float x = 0, y = 50;
     for (unsigned int i = 0; i < 31 * 28; i++) {
         Rectangle tmp = {x, y, 5, 5};
-        if (!walls.WallCollsion(tmp) && !CheckCollisionRecs(tmp, middleBox)) {
+        if (!walls.WallCollsion(tmp) && !CheckCollisionRecs(tmp, middleBox) &&
+        !BigBallCollision(tmp)) {
             tmp = {x + 12.5f, y + 12.5f, 5, 5};
             ball.push_back(tmp);
         }
@@ -113,7 +95,6 @@ Balls::Balls(Walls& walls) {
             x += 25;
         }
     }
-
     ball.shrink_to_fit();
 }
 
@@ -121,12 +102,32 @@ void Balls::DrawBalls() {
     for (unsigned int i = 0; i < ball.size(); i++) {
         DrawRectangleRec(ball[i], YELLOW);
     }
+    for (unsigned int i = 0; i < bigBalls.size(); i++) {
+        DrawRectangleRec(bigBalls[i], YELLOW);
+    }
 }
 
 void Balls::BallCollision(Rectangle pacman) {
     for (unsigned int i = 0; i < ball.size(); i++) {
         if (CheckCollisionRecs(pacman, ball[i])) {
             ball.erase(ball.begin() + i);
+        }
+    }
+}
+
+bool Balls::BigBallCollision(Rectangle rec) const{
+    for (unsigned int i = 0; i < bigBalls.size(); i++) {
+        if (CheckCollisionRecs(bigBalls[i], rec)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Balls::RemoveBigBall(Rectangle rec) {
+    for (unsigned int i = 0; i < bigBalls.size(); i++) {
+        if (CheckCollisionRecs(bigBalls[i], rec)) {
+            bigBalls.erase(bigBalls.begin() + i);
         }
     }
 }
