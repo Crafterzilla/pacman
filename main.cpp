@@ -29,6 +29,9 @@ int main(int argc, char ** argv)
     Texture2D orangeGhostTex = LoadTexture("./img/orangeGhost.png");
     Texture2D blueGhostTex = LoadTexture("./img/blueGhost.png");
 
+    Texture2D floatingEyes = LoadTexture("./img/floatingGhost.png");
+    Texture2D scaredGhost = LoadTexture("./img/scareGhost.png");
+
     Player pacman(pacmanSprite);
     Walls walls(boardMaze);
     GameCondtions game;
@@ -36,10 +39,10 @@ int main(int argc, char ** argv)
 
     //Summon ghosts
     enum {red, blue, pink, orange};
-    Ghosts redGhost(redGhostTex, red);
-    Ghosts blueGhost(blueGhostTex, blue);
-    Ghosts pinkGhost(pinkGhostTex, pink);
-    Ghosts orangeGhost(orangeGhostTex, orange);
+    Ghosts redGhost(redGhostTex, floatingEyes, scaredGhost, red);
+    Ghosts blueGhost(blueGhostTex, floatingEyes, scaredGhost,blue);
+    Ghosts pinkGhost(pinkGhostTex, floatingEyes, scaredGhost, pink);
+    Ghosts orangeGhost(orangeGhostTex, floatingEyes, scaredGhost, orange);
 
     while (!WindowShouldClose())
     {
