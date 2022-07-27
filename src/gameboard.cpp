@@ -1,5 +1,7 @@
 #include "../include/gameboard.h"
 
+#define logStuff(x) std::cout << x << "\n";
+
 void DrawGrid(int widthRes, int lengthRes, int scaleFactor) {
     for (int i = 0; i < widthRes; i += scaleFactor) {
         DrawRectangle(i, 0, 1, lengthRes, RAYWHITE);
@@ -115,7 +117,7 @@ void Balls::BallCollision(Rectangle pacman) {
     }
 }
 
-bool Balls::BigBallCollision(Rectangle rec) const{
+bool Balls::BigBallCollision(const Rectangle& rec) const{
     for (unsigned int i = 0; i < bigBalls.size(); i++) {
         if (CheckCollisionRecs(bigBalls[i], rec)) {
             return true;

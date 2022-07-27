@@ -55,7 +55,8 @@ public:
 
 class GameCondtions {
 public:
-    bool IsPlayerAlive, playerAndWallCollsion;
+    bool IsPlayerAlive, playerAndWallCollsion,
+    ghostsFrightened;
     GameCondtions();
     void PacmanAteBall(Rectangle);
 };
@@ -68,7 +69,7 @@ public:
     Balls(Walls&);
     void DrawBalls();
     void BallCollision(Rectangle);
-    bool BigBallCollision(Rectangle) const;
+    bool BigBallCollision(const Rectangle&) const;
     void RemoveBigBall(Rectangle);
 };
 
