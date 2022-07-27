@@ -23,12 +23,13 @@ private:
     sizeNextDir = sizeof(nextDir) / sizeof(*nextDir);
 
     void RedAI(Player& pacman, Walls&);
-    void BlueAI(Player& pacman, Walls&);
+    void BlueAI(Player& pacman, Rectangle&, Walls&);
     void PinkAI(Player& pacman, Walls&);
     void OrangeAI(Player& pacman, Walls&);
 public:
     Ghosts(Texture2D, int whichGhost);
-    void MoveGhost(Player& pacman, Walls& walls);
+    void MoveGhost(Player& pacman, Rectangle& redGhost,
+    Walls& walls);
     void DrawGhost();
 };
 

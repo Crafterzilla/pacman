@@ -32,13 +32,14 @@ Ghosts::Ghosts(Texture2D ghostSkin, int whichGhost) {
     this->canGoThroughDoor = true;
 }
 
-void Ghosts::MoveGhost(Player& pacman, Walls& walls) {
+void Ghosts::MoveGhost(Player& pacman, Rectangle& redGhost, Walls& walls) {
 
     switch (whichGhost) {
     case red:
         RedAI(pacman, walls);
         break;
     case blue:
+        BlueAI(pacman, redGhost, walls);
         break;
     case pink:
         PinkAI(pacman, walls);
@@ -188,6 +189,62 @@ void Ghosts::OrangeAI(Player& pacman, Walls& walls) {
             break;
         case scatter: {
             Rectangle scatterCorner = {25, 775, 25, 25};
+            PathFind(scatterCorner, walls);
+        }
+            break;
+        case scared: {
+            int randX = 0, randY = 0;
+            randX = GetRandomValue(0, 700);
+            randY = GetRandomValue(50, 800);
+            Rectangle random = {randX, randY, 25, 25};
+            PathFind(random, walls);
+        }
+            break;
+        case retreat:
+            break;
+        case gameStart: {
+            Rectangle startRec = {400, 325, 25, 25};
+            PathFind(startRec, walls);
+            if (CheckCollisionRecs(startRec, hitbox)) {
+                mode = chase;
+                canGoThroughDoor = false;
+            }
+        }
+            break;
+    }
+}
+
+void Ghosts::BlueAI(Player& pacman, Rectangle& redGhost, Walls& walls) {
+    switch (mode) {
+        case chase: {
+            Rectangle twoAwayPacmanHitbox = {0, 0, 25, 25};
+            switch(pacman.currentDirection) {
+                case right:
+                case nodir:
+                    twoAwayPacmanHitbox = {pacman.hitbox.x + 50, pacman.hitbox.y, 25, 25};
+                    break;
+                case left:
+                    twoAwayPacmanHitbox = {pacman.hitbox.x - 50, pacman.hitbox.y, 25, 25};
+                    break;
+                case up:
+                    twoAwayPacmanHitbox = {pacman.hitbox.x, pacman.hitbox.y - 50, 25, 25};
+                    break;
+                case down:
+                    twoAwayPacmanHitbox = {pacman.hitbox.x, pacman.hitbox.y + 50, 25, 25};
+                    break;
+            }
+
+            Vector2 originBox = {twoAwayPacmanHitbox.x, twoAwayPacmanHitbox.y},
+            redGhostPos = {redGhost.x, redGhost.y};
+
+            Vector2 rotatedTarget = Rotate180DegreesFromOrigin(redGhostPos, originBox);
+            Rectangle rotatedTargetRec = {rotatedTarget.x, rotatedTarget.y, 25, 25};
+
+            PathFind(rotatedTargetRec, walls);
+        }
+            break;
+        case scatter: {
+            Rectangle scatterCorner = {50, 50, 25, 25};
             PathFind(scatterCorner, walls);
         }
             break;

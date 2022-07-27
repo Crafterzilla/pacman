@@ -167,7 +167,7 @@ void Entity::RoundtoNearest25(float& num) {
     }
 }
 
-Vector2 Rotate180DegreesFromOrigin(Vector2 cord, Vector2 originPoint)  {
+Vector2 Entity::Rotate180DegreesFromOrigin(Vector2 cord, Vector2 originPoint)  {
     float x = 2 * originPoint.x - cord.x;
     float y = 2 * originPoint.y - cord.y;
     return {x, y};

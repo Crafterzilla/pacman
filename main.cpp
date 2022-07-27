@@ -26,7 +26,7 @@ int main(int argc, char ** argv)
     //Ghosts textures
     Texture2D redGhostTex = LoadTexture("./img/redGhost.png");
     Texture2D pinkGhostTex = LoadTexture("./img/pinkGhost.png");
-    Texture2D orangeGhostTex = LoadTexture("./img.orangeGhost.png");
+    Texture2D orangeGhostTex = LoadTexture("./img/orangeGhost.png");
     Texture2D blueGhostTex = LoadTexture("./img/blueGhost.png");
 
     Player pacman(pacmanSprite);
@@ -49,16 +49,22 @@ int main(int argc, char ** argv)
 
             pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
             walls.DoorCollision(pacman.hitbox));
-
             balls.BallCollision(pacman.hitbox);
-            redGhost.MoveGhost(pacman, walls);
-            pinkGhost.MoveGhost(pacman, walls);
+
+            redGhost.MoveGhost(pacman, redGhost.hitbox, walls);
+            pinkGhost.MoveGhost(pacman, redGhost.hitbox, walls);
+            orangeGhost.MoveGhost(pacman, redGhost.hitbox, walls);
+            blueGhost.MoveGhost(pacman, redGhost.hitbox, walls);
 
             pacman.DrawEntity();
             redGhost.DrawEntity();
             pinkGhost.DrawEntity();
+            orangeGhost.DrawEntity();
+            blueGhost.DrawEntity();
+
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             balls.DrawBalls();
+            
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();
     }
