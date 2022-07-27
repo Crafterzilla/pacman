@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
 
     //Set FPS
     const int screenRefreshRate = GetMonitorRefreshRate(0);
-    SetTargetFPS(screenRefreshRate);
+    SetTargetFPS(200);
 
     Texture2D boardMaze = LoadTexture("./img/board.png");
     Texture2D pacmanSprite = LoadTexture("./img/pacmanSprites.png");
@@ -64,7 +64,7 @@ int main(int argc, char ** argv)
 
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
             balls.DrawBalls();
-            
+
             DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();
     }
