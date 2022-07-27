@@ -77,8 +77,8 @@ Walls::Walls(Texture2D maze) {
     }
 }
 
-bool Walls::WallCollsion(Rectangle pacman) {
-    for (std::list<Rectangle>::iterator it = walls.begin();
+bool Walls::WallCollsion(Rectangle pacman) const{
+    for (std::list<Rectangle>::const_iterator it = walls.begin();
     it != walls.end(); ++it) {
         if (CheckCollisionRecs(pacman, *it)) {
             return true;
@@ -87,7 +87,7 @@ bool Walls::WallCollsion(Rectangle pacman) {
     return false;
 }
 
-bool Walls::DoorCollision(Rectangle rec) {
+bool Walls::DoorCollision(Rectangle rec) const{
     for (int i = 0; i < doors.size(); i++) {
         if (CheckCollisionRecs(rec, doors[i]))
             return true;

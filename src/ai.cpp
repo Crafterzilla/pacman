@@ -38,7 +38,7 @@ Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, 
     this->speed = 200.0f;
 }
 
-void Ghosts::MoveGhost(Player& pacman, Rectangle& redGhost, Walls& walls) {
+void Ghosts::MoveGhost(const Player& pacman, const Rectangle& redGhost, const Walls& walls) {
     ModeChanger();
 
     //Choose right aiType for ghost
@@ -110,7 +110,7 @@ void Ghosts::ModeChanger() {
         modeTimer = 0.0f;
 }
 
-void Ghosts::RetreatMode(Walls& walls) {
+void Ghosts::RetreatMode(const Walls& walls) {
         canGoThroughDoor = true;
         Rectangle retreatRec = {350, 400, 25, 25};
         PathFind(retreatRec, walls);
@@ -120,16 +120,20 @@ void Ghosts::RetreatMode(Walls& walls) {
         spriteSheet = floatEyes;
 }
 
-void Ghosts::ScaredMode(Walls& walls) {
+void Ghosts::ScaredMode(const Player& pacman, const Walls& walls) {
     int randX = 0, randY = 0;
     randX = GetRandomValue(0, 700);
     randY = GetRandomValue(50, 800);
     Rectangle random = {randX, randY, 25, 25};
     PathFind(random, walls);
     spriteSheet = scaredGhost;
+
+    if (CheckCollisionRecs(pacman.hitbox, hitbox)) {
+        mode = retreat;
+    }
 }
 
-void Ghosts::GameStartMode(Walls& walls) {
+void Ghosts::GameStartMode(const Walls& walls) {
     Rectangle startRec = {400, 325, 25, 25};
     PathFind(startRec, walls);
     if (CheckCollisionRecs(startRec, hitbox)) {
@@ -139,7 +143,7 @@ void Ghosts::GameStartMode(Walls& walls) {
     spriteSheet = regGhost;
 }
 
-void Ghosts::RedAI(Player& pacman, Walls& walls) {
+void Ghosts::RedAI(const Player& pacman, const Walls& walls) {
     switch (mode) {
         case chase: 
             PathFind(pacman.hitbox, walls);
@@ -152,7 +156,7 @@ void Ghosts::RedAI(Player& pacman, Walls& walls) {
         }
             break;
         case scared:
-            ScaredMode(walls);
+            ScaredMode(pacman, walls);
             break;
         case retreat:
             RetreatMode(walls);
@@ -163,7 +167,7 @@ void Ghosts::RedAI(Player& pacman, Walls& walls) {
     }
 }
 
-void Ghosts::PinkAI(Player& pacman, Walls& walls) {
+void Ghosts::PinkAI(const Player& pacman, const Walls& walls) {
     switch (mode) {
         case chase: {
             Rectangle fourAwayPacmanHitbox = {0, 0, 25, 25};
@@ -193,7 +197,7 @@ void Ghosts::PinkAI(Player& pacman, Walls& walls) {
         spriteSheet = regGhost;
             break;
         case scared:
-            ScaredMode(walls);
+            ScaredMode(pacman, walls);
             break;
         case retreat:
             RetreatMode(walls);
@@ -204,7 +208,7 @@ void Ghosts::PinkAI(Player& pacman, Walls& walls) {
     }
 }
 
-void Ghosts::OrangeAI(Player& pacman, Walls& walls) {
+void Ghosts::OrangeAI(const Player& pacman, const Walls& walls) {
     float distance = sqrt(pow((pacman.hitbox.x - hitbox.x), 2) + 
     pow((pacman.hitbox.y - hitbox.y), 2));
 
@@ -225,7 +229,7 @@ void Ghosts::OrangeAI(Player& pacman, Walls& walls) {
         spriteSheet = regGhost;
             break;
         case scared:
-            ScaredMode(walls);
+            ScaredMode(pacman, walls);
             break;
         case retreat:
             RetreatMode(walls);
@@ -236,7 +240,7 @@ void Ghosts::OrangeAI(Player& pacman, Walls& walls) {
     }
 }
 
-void Ghosts::BlueAI(Player& pacman, Rectangle& redGhost, Walls& walls) {
+void Ghosts::BlueAI(const Player& pacman, const Rectangle& redGhost, const Walls& walls) {
     switch (mode) {
         case chase: {
             Rectangle twoAwayPacmanHitbox = {0, 0, 25, 25};
@@ -273,7 +277,7 @@ void Ghosts::BlueAI(Player& pacman, Rectangle& redGhost, Walls& walls) {
         }
             break;
         case scared:
-            ScaredMode(walls);
+            ScaredMode(pacman, walls);
             break;
         case retreat:
             RetreatMode(walls);
@@ -284,7 +288,7 @@ void Ghosts::BlueAI(Player& pacman, Rectangle& redGhost, Walls& walls) {
     }
 }
 
-void Ghosts::PathFind(Rectangle& rec, Walls& walls) {
+void Ghosts::PathFind(const Rectangle& rec, const Walls& walls) {
     //Project Bertha
 
     //ex: a rectangle will be created in the left. that rectangle will create four tmp

@@ -14,8 +14,8 @@ private:
     std::array<Rectangle, 2> doors;
 public:
     Walls(Texture2D);
-    bool WallCollsion(Rectangle);
-    bool DoorCollision(Rectangle);
+    bool WallCollsion(Rectangle) const;
+    bool DoorCollision(Rectangle) const;
 };
 
 class GameCondtions {

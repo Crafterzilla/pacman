@@ -22,25 +22,25 @@ private:
     bool canGoThroughDoor;
 
     //Variables for method pathfind
-    void PathFind(Rectangle&, Walls&);
+    void PathFind(const Rectangle&, const Walls&);
     int nextDir[10], goToNextDir = 4,
     sizeNextDir = sizeof(nextDir) / sizeof(*nextDir);
 
-    void RedAI(Player& pacman, Walls&);
-    void BlueAI(Player& pacman, Rectangle&, Walls&);
-    void PinkAI(Player& pacman, Walls&);
-    void OrangeAI(Player& pacman, Walls&);
+    void RedAI(const Player& pacman, const Walls&);
+    void BlueAI(const Player& pacman, const Rectangle&, const Walls&);
+    void PinkAI(const Player& pacman, const Walls&);
+    void OrangeAI(const Player& pacman, const Walls&);
 
     void ModeChanger();
 
-    void RetreatMode(Walls&);
-    void ScaredMode(Walls&);
-    void GameStartMode(Walls&);
+    void RetreatMode(const Walls&);
+    void ScaredMode(const Player& pacman, const Walls&);
+    void GameStartMode(const Walls&);
 
 public:
     Ghosts(Texture2D, Texture2D, Texture2D, int whichGhost);
-    void MoveGhost(Player& pacman, Rectangle& redGhost,
-    Walls& walls);
+    void MoveGhost(const Player& pacman, const Rectangle& redGhost,
+    const Walls& walls);
     void DrawGhost();
 };
 
