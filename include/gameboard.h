@@ -53,14 +53,6 @@ public:
     bool DoorCollision(Rectangle) const;
 };
 
-class GameCondtions {
-public:
-    bool IsPlayerAlive, playerAndWallCollsion,
-    ghostsFrightened;
-    GameCondtions();
-    void PacmanAteBall(Rectangle);
-};
-
 class Balls {
 private:
     std::vector<Rectangle> ball;

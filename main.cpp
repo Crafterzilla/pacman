@@ -2,7 +2,7 @@
 #include "./include/player.h"
 #include "./include/gameboard.h"
 #include "./include/ai.h"
-
+#include "./include/gameConditions.h"
 
 #define log(x) std::cout << x << std::endl;
 
@@ -34,7 +34,6 @@ int main(int argc, char ** argv)
 
     Player pacman(pacmanSprite);
     Walls walls(boardMaze);
-    GameCondtions game;
     Balls balls(walls);
 
     //Summon ghosts
@@ -43,6 +42,9 @@ int main(int argc, char ** argv)
     Ghosts blueGhost(blueGhostTex, floatingEyes, scaredGhost,blue);
     Ghosts pinkGhost(pinkGhostTex, floatingEyes, scaredGhost, pink);
     Ghosts orangeGhost(orangeGhostTex, floatingEyes, scaredGhost, orange);
+
+    GameConditions game(redGhost, blueGhost, pinkGhost, orangeGhost, pacman, 
+    balls, walls);
 
     while (!WindowShouldClose())
     {
@@ -53,27 +55,15 @@ int main(int argc, char ** argv)
             pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
             walls.DoorCollision(pacman.hitbox));
 
-
-            redGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
-            pinkGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
-            orangeGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
-            blueGhost.CheckConditions(balls.BigBallCollision(pacman.hitbox));
+            game.CheckIfPacmanAteBigBall();
 
             balls.BallCollision(pacman.hitbox);
             balls.RemoveBigBall(pacman.hitbox);
 
-            redGhost.MoveGhost(pacman, redGhost.hitbox, walls);
-            pinkGhost.MoveGhost(pacman, redGhost.hitbox, walls);
-            orangeGhost.MoveGhost(pacman, redGhost.hitbox, walls);
-            blueGhost.MoveGhost(pacman, redGhost.hitbox, walls);
-
+            game.MoveAllGhosts();
+            
+            game.DrawAllGhost();
             balls.DrawBalls();
-
-            pacman.DrawEntity();
-            redGhost.DrawEntity();
-            pinkGhost.DrawEntity();
-            orangeGhost.DrawEntity();
-            blueGhost.DrawEntity();
 
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
 

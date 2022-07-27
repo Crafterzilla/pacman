@@ -18,10 +18,7 @@ void DisplayMouseCords() {
     std::cout << "MouseX: " << mouseX << "\n"
     << "MouseY: " << mouseY << "\n";
 }
-GameCondtions::GameCondtions() {
-    this->IsPlayerAlive = false;
-    this->playerAndWallCollsion = false;
-}
+
 
 Walls::Walls(Texture2D maze) {
     Rectangle tmp = {0, 50, 25, 25};
