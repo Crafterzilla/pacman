@@ -43,8 +43,12 @@ int main(int argc, char ** argv)
     Ghosts pinkGhost(pinkGhostTex, floatingEyes, scaredGhost, pink);
     Ghosts orangeGhost(orangeGhostTex, floatingEyes, scaredGhost, orange);
 
+
+    Texture2D allTextures[] = {redGhostTex, pinkGhostTex, orangeGhostTex, blueGhostTex, floatingEyes,
+    scaredGhost, pacmanSprite};
+
     GameConditions game(redGhost, blueGhost, pinkGhost, orangeGhost, pacman, 
-    balls, walls);
+    balls, walls, allTextures);
 
     while (!WindowShouldClose())
     {
@@ -52,22 +56,25 @@ int main(int argc, char ** argv)
             ClearBackground(BLACK);
             DisplayMouseCords();
 
-            pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
-            walls.DoorCollision(pacman.hitbox));
+            if (!game.PauseGame()) {
+                pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
+                walls.DoorCollision(pacman.hitbox));
 
-            game.CheckIfPacmanAteBigBall();
+                game.CheckIfPacmanAteBigBall();
+                game.CheckAllConditions();
 
-            balls.BallCollision(pacman.hitbox);
-            balls.RemoveBigBall(pacman.hitbox);
+                balls.BallCollision(pacman.hitbox);
+                balls.RemoveBigBall(pacman.hitbox);
+                game.MoveAllGhosts();
+            }
 
-            game.MoveAllGhosts();
-            
-            game.DrawAllGhost();
             balls.DrawBalls();
-
+            game.DrawAllEntities();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
 
-            DrawGrid(widthRes, lengthRes, tileScaleFactor);
+            game.DrawPauseMenu();
+            game.DrawGUI(pacmanSprite);
+            //DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();
     }
 
