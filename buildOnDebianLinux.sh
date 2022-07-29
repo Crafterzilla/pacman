@@ -4,7 +4,7 @@ sudo apt update && sudo apt upgrade
 
 #Install some other important tools
 sudo apt install git-all -y
-sudo apt install build-Essentials -y
+sudo apt install build-essential -y
 sudo apt install libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev mesa-utils -y
 
 #install raylib
