@@ -61,7 +61,7 @@ public:
     Balls(Walls&);
     unsigned int GetBallCount() {return ball.size();}
     void DrawBalls();
-    void BallCollision(Rectangle);
+    bool BallCollision(Rectangle);
     bool BigBallCollision(const Rectangle&) const;
     void RemoveBigBall(Rectangle);
 };
