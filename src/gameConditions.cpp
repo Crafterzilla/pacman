@@ -265,9 +265,9 @@ void GameConditions::PlayAllSound() {
 
     if (IsPlayerAlive) {
         if (!IsPaused)
-            SetMusicVolume(pacRemix, 0.25f);
-        else
             SetMusicVolume(pacRemix, 0.5f);
+        else
+            SetMusicVolume(pacRemix, 1.0f);
 
         if (!IsMusicStreamPlaying(pacRemix)) {
             StopMusicStream(pacRemix);
@@ -275,7 +275,7 @@ void GameConditions::PlayAllSound() {
         }      
         // PlayMusicStream(pacRemix);
         if (balls.BallCollision(pacman.hitbox) || balls.BigBallCollision(pacman.hitbox)) {
-            SetSoundVolume(chompSound, 0.5f);
+            SetSoundVolume(chompSound, 1.0f);
             PlaySound(chompSound);
             score += 10;
         }
@@ -294,7 +294,7 @@ void GameConditions::PlayAllSound() {
             }
             if (CheckCollisionRecs(ghosts[i].hitbox, pacman.hitbox) &&
             ghosts[i].GetGhostMode() == 2) {
-                SetSoundVolume(ghostEaten, 0.5f);
+                SetSoundVolume(ghostEaten, 1.0f);
                 PlaySound(ghostEaten);
                 score += 100;
             }   
