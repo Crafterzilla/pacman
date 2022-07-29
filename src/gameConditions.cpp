@@ -17,7 +17,18 @@ Player& pacman, Balls& balls, Walls& walls, Texture2D list[]) :
     score = 0;
     round = 0;
     timer = 0.0f;
+    gameStart = true;
     this->list = list; 
+
+
+    //Sound Init
+
+    pacRemix = LoadMusicStream("audio/pacmanRemixi.mp3");
+    chompSound = LoadSound("audio/chomp.mp3");
+    sirenB = LoadSound("audio/sirenB.mp3");
+    sirenC = LoadSound("audio/sirenC.mp3");
+    deathSound = LoadSound("audio/death.mp3");
+    ghostEaten = LoadSound("audio/eatGhost.mp3");
 }
 
 void GameConditions::CheckIfPacmanAteBigBall() {
@@ -83,7 +94,7 @@ void GameConditions::DrawPauseMenu() {
             DrawRectangleRec(playAgainBox, moreOffPurple);
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 IsPaused = false;
-                RestartMap();
+                RestartMap(true);
             }
         }
         else
@@ -121,14 +132,39 @@ bool GameConditions::CheckMouseCollisionRec(const Rectangle& rec) {
 }
 
 void GameConditions::CheckGameOverOrWon() {
+    Ghosts ghosts[4] = {redGhost, blueGhost, 
+    pinkGhost, orangeGhost};
     if (balls.GetBallCount() == 0) {
         round++;
         score += 1000;
-        RestartMap();
+        RestartMap(false);
+    } 
+    
+    for (int i = 0; i < 4; i++) {
+        if (CheckCollisionRecs(ghosts[i].hitbox, pacman.hitbox) && (ghosts[i].GetGhostMode()
+        != 2 && ghosts[i].GetGhostMode() != 3)) {
+            lives--;
+            RestartMap(false);
+        }
+    }
+
+    if (lives == 0) {
+        RestartMap(true);
     }
 }
 
-void GameConditions::RestartMap() {
+void GameConditions::RestartMap(bool fullRestart) {
+    IsPlayerAlive = false;
+
+    StopMusicStream(pacRemix);
+    PlaySound(deathSound);
+
+
+
+
+
+
+
     enum TextureNames {redTex, pinkTex, orangeTex, blueTex, floating, scared, pacmanSprite};
     enum {red, blue, pink, orange};
 
@@ -140,15 +176,68 @@ void GameConditions::RestartMap() {
     Player pacman(list[pacmanSprite]);
     Balls balls(walls);
 
-    this->balls = balls;
     this->redGhost = redGhost;
     this->blueGhost = blueGhost;
     this->orangeGhost = orangeGhost;
     this->pinkGhost = pinkGhost;
     this->pacman = pacman;
 
+    if (fullRestart) {
+        this->balls = balls;
+        lives = 3;
+        score = 0;
+        round = 0;
+        timer = 0.0f;
+    }
+
 }
 
 void GameConditions::CheckAllConditions() {
+    CheckGameOverOrWon();
+    CheckIfPacmanAteBigBall();
+}
 
+void GameConditions::StartGame() {
+
+}
+
+void GameConditions::PlayAllSound() {
+    UpdateMusicStream(pacRemix);
+
+    if (IsPlayerAlive) {
+        if (!IsPaused)
+            SetMusicVolume(pacRemix, 0.25f);
+        else
+            SetMusicVolume(pacRemix, 0.5f);
+
+        if (!IsMusicStreamPlaying(pacRemix)) {
+            PlayMusicStream(pacRemix);
+        }      
+        // PlayMusicStream(pacRemix);
+        if (balls.BallCollision(pacman.hitbox) || balls.BigBallCollision(pacman.hitbox)) {
+            SetSoundVolume(chompSound, 0.5f);
+            PlaySound(chompSound);
+            score += 10;
+        }
+
+        // for (int i = 0; i < 4; i++) {
+        //     switch(ghosts[i].GetGhostMode()) {
+        //         case 0:
+        //         case 1:
+        //             PlaySound(sirenB);
+        //             break;
+        //         case 2:
+        //         case 3:
+        //             break;
+        //     }
+        // }
+    }
+}
+
+GameConditions::~GameConditions() {
+    UnloadMusicStream(pacRemix);
+    UnloadSound(sirenB);
+    UnloadSound(sirenC);
+    UnloadSound(deathSound);
+    UnloadSound(ghostEaten);
 }
