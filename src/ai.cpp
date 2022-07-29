@@ -24,7 +24,7 @@ Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, 
         this->y = 400;
         break;
     case orange:
-        this->x = 275;
+        this->x = 300;
         this->y = 400;
         break;
     }
@@ -41,8 +41,10 @@ Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, 
 }
 
 void Ghosts::CheckConditions(bool hasPacmanEatenABigBall) {
-    if (hasPacmanEatenABigBall)
+    if (hasPacmanEatenABigBall) {
         mode = scared;
+        scaredTimer = 0.0f;
+    }
 }
 
 void Ghosts::MoveGhost(const Player& pacman, const Rectangle& redGhost, const Walls& walls) {
