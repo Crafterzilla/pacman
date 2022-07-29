@@ -40,8 +40,10 @@ private:
     void GameStartMode(const Walls&);
 
 public:
-    Ghosts(Texture2D, Texture2D, Texture2D, int whichGhost);
+    Ghosts(Texture2D, Texture2D, Texture2D, int whichGhost, float ghostSpeed);
     int GetGhostMode() {return this->mode;}
+    void SetGhostModeTimer(float modeTimer) {this->modeTimer = modeTimer;}
+    float GetGhostModeTimer() {return this->modeTimer;}
     void MoveGhost(const Player& pacman, const Rectangle& redGhost,
     const Walls& walls);
     void DrawGhost();

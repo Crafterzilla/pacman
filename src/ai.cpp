@@ -2,7 +2,7 @@
 
 #define logStuff(x) std::cout << x << "\n";
 
-Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, int whichGhost) {
+Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, int whichGhost, float ghostSpeed) {
     this->spriteSheet = ghostSkin;
     this->regGhost = ghostSkin;
 
@@ -17,7 +17,7 @@ Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, 
         break;
     case blue:
         this->x = 350;
-        this->y = 325;
+        this->y = 400;
         break;
     case pink:
         this->x = 300;
@@ -37,7 +37,7 @@ Ghosts::Ghosts(Texture2D ghostSkin, Texture2D floatEyes, Texture2D scaredGhost, 
     this->timer = 0.0f;
     //this->scaredTimer = 0.0f;
     this->modeTimer = 0.0f;
-    this->speed = 200.0f;
+    this->speed = ghostSpeed;
 }
 
 void Ghosts::CheckConditions(bool hasPacmanEatenABigBall) {
@@ -116,11 +116,12 @@ void Ghosts::ModeChanger() {
             mode = chase;
 
         scaredTimer = 0.0f;
+        speed = 175.0f;
     }
     else if (mode == scared) {
         scaredTimer += GetFrameTime();
         if (scaredTimer > 7.0f) {
-            scaredTimer = 0;
+            scaredTimer = 0.0f;
             mode = chase;
         }
     }
@@ -138,6 +139,7 @@ void Ghosts::RetreatMode(const Walls& walls) {
         }
         spriteSheet = floatEyes;
         scaredTimer = 0.0f;
+        speed = 225.0f;
 }
 
 void Ghosts::ScaredMode(const Player& pacman, const Walls& walls) {
@@ -151,6 +153,7 @@ void Ghosts::ScaredMode(const Player& pacman, const Walls& walls) {
     if (CheckCollisionRecs(pacman.hitbox, hitbox)) {
         mode = retreat;
     }
+    speed = 150.0f;
 }
 
 void Ghosts::GameStartMode(const Walls& walls) {
@@ -162,6 +165,7 @@ void Ghosts::GameStartMode(const Walls& walls) {
     }
     spriteSheet = regGhost;
     scaredTimer = 0.0f;
+    speed = 200.0f;
 }
 
 void Ghosts::RedAI(const Player& pacman, const Walls& walls) {

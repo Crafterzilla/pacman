@@ -22,6 +22,7 @@ Player& pacman, Balls& balls, Walls& walls, Texture2D list[]) :
     this->list = list; 
     fullRestart = false;
     exit = false;
+    ghostSpeedVar = 175.0f;
 
     pacRemix = LoadMusicStream("audio/pacmanRemixi.mp3");
     chompSound = LoadSound("audio/chomp.mp3");
@@ -138,8 +139,10 @@ void GameConditions::CheckGameOverOrWon() {
     if (balls.GetBallCount() == 0) {
         round++;
         score += 1000;
-        IsPlayerAlive = false;
-        fullRestart = false;
+        Balls balls(walls);
+        this->balls = balls;
+        ghostSpeedVar += 5.0f;
+        IsPlayerWinner = true;
     } 
     
     for (int i = 0; i < 4; i++) {
@@ -171,10 +174,10 @@ void GameConditions::RestartMap() {
             enum TextureNames {redTex, pinkTex, orangeTex, blueTex, floating, scared, pacmanSprite};
             enum {red, blue, pink, orange};
 
-            Ghosts redGhost(list[redTex], list[floating], list[scared], red);
-            Ghosts blueGhost(list[blueTex], list[floating], list[scared],blue);
-            Ghosts pinkGhost(list[pinkTex], list[floating], list[scared], pink);
-            Ghosts orangeGhost(list[orangeTex], list[floating], list[scared], orange);
+            Ghosts redGhost(list[redTex], list[floating], list[scared], red, ghostSpeedVar);
+            Ghosts blueGhost(list[blueTex], list[floating], list[scared],blue, ghostSpeedVar);
+            Ghosts pinkGhost(list[pinkTex], list[floating], list[scared], pink, ghostSpeedVar);
+            Ghosts orangeGhost(list[orangeTex], list[floating], list[scared], orange, ghostSpeedVar);
 
             Player pacman(list[pacmanSprite]);
             Balls balls(walls);

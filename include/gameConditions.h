@@ -25,7 +25,8 @@ private:
     int score, lives, round;
     float timer, deathTimer;
     bool gameStart;
-    bool IsPlayerWinner, IsPaused, fullRestart;
+    bool IsPaused, fullRestart;
+    float ghostSpeedVar;
 
     bool CheckMouseCollisionRec(const Rectangle&);
     void CheckIfPacmanAteBigBall();
@@ -36,7 +37,7 @@ public:
     ~GameConditions();
     void RestartMap();
     void PacmanAteBall(Rectangle);
-    bool IsPlayerAlive, exit;
+    bool IsPlayerAlive, exit, IsPlayerWinner;
     bool PauseGame();
     void DrawPauseMenu();
     void DrawGUI(Texture2D);
