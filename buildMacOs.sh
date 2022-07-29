@@ -25,5 +25,6 @@ cd pacman
 
 #Run and Compile game
 $COMPILER -O main.cpp ./src/*.cpp  `pkg-config --libs --cflags raylib` -o pacman
+mv pacman ./build/pacman
 ./build/pacman
 
