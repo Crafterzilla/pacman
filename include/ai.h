@@ -41,6 +41,7 @@ private:
 
 public:
     Ghosts(Texture2D, Texture2D, Texture2D, int whichGhost);
+    int GetGhostMode() {return this->mode;}
     void MoveGhost(const Player& pacman, const Rectangle& redGhost,
     const Walls& walls);
     void DrawGhost();
