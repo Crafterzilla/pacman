@@ -1,5 +1,0 @@
-Deal with grid like movement again\
-Cannot look up much info online except for very spoecific things
-PROGRAM AI!!!
-Make a game map
-Death, eatting a ghost, eatting the big ball, eatting all the balls, deal with souunds
