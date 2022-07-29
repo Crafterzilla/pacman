@@ -87,7 +87,7 @@ Balls::Balls(Walls& walls) {
             tmp = {x + 12.5f, y + 12.5f, 5, 5};
             ball.push_back(tmp);
         }
-        if (x > 675) {
+        if (x > 650) {
             y += 25;
             x = 0;
         } else {
