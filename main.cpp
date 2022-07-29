@@ -13,7 +13,8 @@ int main(int argc, char ** argv)
     const int widthRes = 28 * tileScaleFactor, lengthRes = 36 * tileScaleFactor;
 
     InitWindow(widthRes, lengthRes, "Pac-Mans");
-
+    InitAudioDevice();
+    SetMasterVolume(100.0f);
     //Set FPS
     const int screenRefreshRate = GetMonitorRefreshRate(0);
     SetTargetFPS(200);
@@ -51,21 +52,21 @@ int main(int argc, char ** argv)
     balls, walls, allTextures);
 
     while (!WindowShouldClose())
-    {
+    {   
         BeginDrawing();
             ClearBackground(BLACK);
-            DisplayMouseCords();
+            //DisplayMouseCords();
 
             if (!game.PauseGame()) {
                 pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
-                walls.DoorCollision(pacman.hitbox));
-
-                game.CheckIfPacmanAteBigBall();
+                walls.DoorCollision(pacman.hitbox));                
+                
                 game.CheckAllConditions();
 
-                balls.BallCollision(pacman.hitbox);
+                // balls.BallCollision(pacman.hitbox);
                 balls.RemoveBigBall(pacman.hitbox);
                 game.MoveAllGhosts();
+
             }
 
             balls.DrawBalls();
@@ -76,9 +77,14 @@ int main(int argc, char ** argv)
             game.DrawGUI(pacmanSprite);
             //DrawGrid(widthRes, lengthRes, tileScaleFactor);
         EndDrawing();
+        game.PlayAllSound();
     }
 
+    for (int i = 0; i < 7; i++)
+        UnloadTexture(allTextures[i]);
+
     CloseWindow();
+    CloseAudioDevice();
 
     return 0;
 }
