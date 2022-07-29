@@ -38,11 +38,14 @@ int main(int argc, char ** argv)
     Balls balls(walls);
 
     //Summon ghosts
+
+    const float defaultSpeed = 150.0f;
+
     enum {red, blue, pink, orange};
-    Ghosts redGhost(redGhostTex, floatingEyes, scaredGhost, red);
-    Ghosts blueGhost(blueGhostTex, floatingEyes, scaredGhost,blue);
-    Ghosts pinkGhost(pinkGhostTex, floatingEyes, scaredGhost, pink);
-    Ghosts orangeGhost(orangeGhostTex, floatingEyes, scaredGhost, orange);
+    Ghosts redGhost(redGhostTex, floatingEyes, scaredGhost, red, defaultSpeed);
+    Ghosts blueGhost(blueGhostTex, floatingEyes, scaredGhost,blue, defaultSpeed);
+    Ghosts pinkGhost(pinkGhostTex, floatingEyes, scaredGhost, pink, defaultSpeed);
+    Ghosts orangeGhost(orangeGhostTex, floatingEyes, scaredGhost, orange, defaultSpeed);
 
 
     Texture2D allTextures[] = {redGhostTex, pinkGhostTex, orangeGhostTex, blueGhostTex, floatingEyes,
