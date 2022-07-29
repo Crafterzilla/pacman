@@ -55,10 +55,10 @@ void GameConditions::DrawAllEntities() {
 }
 
 bool GameConditions::PauseGame() {
-    if (IsKeyPressed(KEY_P) && !IsPaused && !IsPlayerAlive) {
+    if (IsKeyPressed(KEY_P) && !IsPaused && IsPlayerAlive) {
         IsPaused = true;
     }
-    else if (IsKeyPressed(KEY_P) && IsPaused && !IsPlayerAlive) {
+    else if (IsKeyPressed(KEY_P) && IsPaused && IsPlayerAlive) {
         IsPaused = false;
     }
 
