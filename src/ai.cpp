@@ -143,7 +143,7 @@ void Ghosts::RetreatMode(const Walls& walls) {
 }
 
 void Ghosts::ScaredMode(const Player& pacman, const Walls& walls) {
-    int randX = 0, randY = 0;
+    float randX = 0, randY = 0;
     randX = GetRandomValue(0, 700);
     randY = GetRandomValue(50, 800);
     Rectangle random = {randX, randY, 25, 25};

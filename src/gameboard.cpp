@@ -51,7 +51,7 @@ bool Walls::WallCollsion(Rectangle pacman) const{
 }
 
 bool Walls::DoorCollision(Rectangle rec) const{
-    for (int i = 0; i < doors.size(); i++) {
+    for (unsigned int i = 0; i < doors.size(); i++) {
         if (CheckCollisionRecs(rec, doors[i]))
             return true;
     }

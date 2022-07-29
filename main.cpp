@@ -16,7 +16,6 @@ int main(int argc, char ** argv)
     InitAudioDevice();
     SetMasterVolume(100.0f);
     //Set FPS
-    const int screenRefreshRate = GetMonitorRefreshRate(0);
     SetTargetFPS(200);
 
     Texture2D boardMaze = LoadTexture("./img/board.png");
