@@ -11,8 +11,6 @@
 class GameConditions {
 private:
     Ghosts& redGhost, &blueGhost, &pinkGhost, &orangeGhost;
-    Ghosts ghosts[4] = {redGhost, blueGhost, 
-    pinkGhost, orangeGhost};
 
     Player& pacman;
     Balls& balls;
@@ -25,25 +23,25 @@ private:
 
 
     int score, lives, round;
-    float timer;
+    float timer, deathTimer;
     bool gameStart;
-    bool IsPlayerAlive, IsPlayerWinner, IsPaused;
+    bool IsPlayerWinner, IsPaused, fullRestart;
+
     bool CheckMouseCollisionRec(const Rectangle&);
     void CheckIfPacmanAteBigBall();
     void CheckGameOverOrWon();
-    void RestartMap(bool);
 public:
     GameConditions(Ghosts&, Ghosts&, Ghosts&,
     Ghosts&, Player&, Balls&, Walls&, Texture2D list[]);
     ~GameConditions();
-
+    void RestartMap();
     void PacmanAteBall(Rectangle);
-
+    bool IsPlayerAlive, exit;
     bool PauseGame();
     void DrawPauseMenu();
     void DrawGUI(Texture2D);
     void DeathMenu();
-    
+
     void CheckAllConditions();
     void MoveAllGhosts();
     void DrawAllEntities();

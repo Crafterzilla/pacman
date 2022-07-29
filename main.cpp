@@ -57,10 +57,14 @@ int main(int argc, char ** argv)
             ClearBackground(BLACK);
             //DisplayMouseCords();
 
+
+            if(game.exit == true)
+                break;
+            
             if (!game.PauseGame()) {
                 pacman.MovePlayer(walls.WallCollsion(pacman.hitbox), 
                 walls.DoorCollision(pacman.hitbox));                
-                
+
                 game.CheckAllConditions();
 
                 // balls.BallCollision(pacman.hitbox);
@@ -72,7 +76,9 @@ int main(int argc, char ** argv)
             balls.DrawBalls();
             game.DrawAllEntities();
             DrawTexture(boardMaze, 0, 50, RAYWHITE);
-
+            if (!game.IsPlayerAlive) {
+                game.RestartMap();
+            }
             game.DrawPauseMenu();
             game.DrawGUI(pacmanSprite);
             //DrawGrid(widthRes, lengthRes, tileScaleFactor);
