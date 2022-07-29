@@ -15,7 +15,7 @@ Player& pacman, Balls& balls, Walls& walls, Texture2D list[]) :
     IsPaused = false;
     lives = 3;
     score = 0;
-    round = 0;
+    round = 1;
     timer = 0.0f;
     deathTimer = 5.0f;
     gameStart = true;
@@ -143,6 +143,7 @@ void GameConditions::CheckGameOverOrWon() {
         this->balls = balls;
         ghostSpeedVar += 5.0f;
         IsPlayerWinner = true;
+        IsPlayerAlive = false;
     } 
     
     for (int i = 0; i < 4; i++) {
@@ -151,23 +152,35 @@ void GameConditions::CheckGameOverOrWon() {
             lives--;
             IsPlayerAlive = false;
             fullRestart = false;
+            IsPlayerWinner = false;
         }
     }
 
     if (lives == 0) {
         IsPlayerAlive = false;
+        IsPlayerWinner = false;
         fullRestart = true;
     }
 }
 
 void GameConditions::RestartMap() {
-    IsPlayerAlive = false;
-
     PauseMusicStream(pacRemix);
-    PlaySound(deathSound);
+    if (!IsPlayerWinner) {
+        PlaySound(deathSound);
+    }
 
 
     deathTimer -= GetFrameTime();
+
+
+    if (fullRestart) {
+        this->balls = balls;
+        lives = 3;
+        score = 0;
+        round = 0;
+        fullRestart = false;
+        StopMusicStream(pacRemix);
+    }
 
     if (deathTimer > 0.0f) {
             DeathMenu();
@@ -187,15 +200,6 @@ void GameConditions::RestartMap() {
             this->orangeGhost = orangeGhost;
             this->pinkGhost = pinkGhost;
             this->pacman = pacman;
-
-        if (fullRestart) {
-            this->balls = balls;
-            lives = 3;
-            score = 0;
-            round = 0;
-            timer = 10.0f;
-            StopMusicStream(pacRemix);
-        }
     } else {
         deathTimer = 5.0f;
         IsPlayerAlive = true;
@@ -208,7 +212,14 @@ void GameConditions::DeathMenu() {
     Color offPurple = {178, 102, 255, 200};
     DrawRectangleRec(deathMenu, offPurple);
 
-    DrawText("You're\nDead m8", 225, 325, 50, RAYWHITE);
+
+
+    if (IsPlayerWinner) {
+        std::string roundCounter = "Round: " + std::to_string(round);
+        DrawText(roundCounter.c_str(), 225, 325, 50, RAYWHITE);
+    } else {
+        DrawText("You're\nDead m8", 225, 325, 50, RAYWHITE);
+    }
 
     Rectangle resumeBox = {225, 475, 25 * 4, 25 * 3};
     Color lessOffPurple = {127, 0, 255, 200}, 
@@ -247,10 +258,6 @@ void GameConditions::DeathMenu() {
 void GameConditions::CheckAllConditions() {
     CheckGameOverOrWon();
     CheckIfPacmanAteBigBall();
-}
-
-void GameConditions::StartGame() {
-
 }
 
 void GameConditions::PlayAllSound() {

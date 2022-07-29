@@ -47,8 +47,6 @@ public:
     void MoveAllGhosts();
     void DrawAllEntities();
 
-    void StartGame();
-
     void PlayAllSound();
 };
 
