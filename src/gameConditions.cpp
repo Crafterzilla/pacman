@@ -174,6 +174,7 @@ void GameConditions::RestartMap() {
 
 
     if (fullRestart) {
+        Balls balls(walls);
         this->balls = balls;
         lives = 3;
         score = 0;
@@ -193,7 +194,6 @@ void GameConditions::RestartMap() {
             Ghosts orangeGhost(list[orangeTex], list[floating], list[scared], orange, ghostSpeedVar);
 
             Player pacman(list[pacmanSprite]);
-            Balls balls(walls);
 
             this->redGhost = redGhost;
             this->blueGhost = blueGhost;
