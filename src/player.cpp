@@ -51,12 +51,12 @@ void Entity::DrawEntity() {
  
     hitbox = {x, y, 25, 25};
     DrawTextureRec(spriteSheet, pacFrame, position, RAYWHITE);
-    logStuff(currentDirection);
+    // logStuff(currentDirection);
 }
 
 void Player::MovePlayer(bool collision, bool doorCollision) {
     // static int moveX = 0, moveY = 0;
-    float speed = 200.0f;
+    float speed = 225.0f;
 
     //Start of Game Movement
     if (IsKeyPressed(KEY_D) && currentDirection == nodir) {
